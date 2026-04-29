@@ -15,4 +15,4 @@
 // ═══════════════════════════════════════════════════════════
 
 window.SUPABASE_URL      = 'https://wnjvekrglvebiecmfamw.supabase.co';
-window.SUPABASE_ANON_KEY = '';
+window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduanZla3JnbHZlYmllY21mYW13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTkxMDYsImV4cCI6MjA5MzAzNTEwNn0.mQYL9sczpda9134iiUP0XBA-qXTCylVlJE-RUFdnmok';
