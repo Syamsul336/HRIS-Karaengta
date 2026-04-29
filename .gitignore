@@ -1,0 +1,24 @@
+# Dependencies (kalau kelak pakai npm)
+node_modules/
+package-lock.json
+
+# Environment & secrets
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Backup
+*.bak
+*.old
+*~
+
+# Catatan: js/config.js BOLEH dicommit karena hanya berisi anon key
+# yang dilindungi RLS. JANGAN commit service_role key.
