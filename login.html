@@ -4,199 +4,567 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login — Karaengta HRIS</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --yellow: #F5C518;
-    --yellow-dark: #D4A017;
-    --red: #C0392B;
-    --dark: #1C1C1E;
-    --gray: #636366;
-    --bg: #FFF8E1;
-    --card: #FFFFFF;
-    --border: #FFE082;
+    --red:         #8D1E18;
+    --red-med:     #a93226;
+    --red-dark:    #7a1a14;
+    --yellow:      #FAD442;
+    --yellow-dark: #e0bc30;
+    --surface:     #FFFFFF;
+    --plan-bg:     #FFFDF0;
+    --border:      rgba(141,30,24,0.15);
+    --text-main:   #303030;
+    --text-muted:  #BDBDBD;
+    --text-hint:   #888888;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: linear-gradient(135deg, #FFF8E1 0%, #FFDD57 100%);
+    font-family: 'Manrope', sans-serif;
     min-height: 100vh;
     display: flex;
+    align-items: stretch;
+    color: var(--text-main);
+    overflow: hidden;
+  }
+
+  /* ── LEFT PANEL (brand) ── */
+  .left-panel {
+    width: 46%;
+    background: var(--red);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 48px 52px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* Decorative circles */
+  .left-panel::before {
+    content: '';
+    position: absolute;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: rgba(250,212,66,0.10);
+    top: -120px; right: -120px;
+    pointer-events: none;
+  }
+  .left-panel::after {
+    content: '';
+    position: absolute;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.12);
+    bottom: -80px; left: -60px;
+    pointer-events: none;
+  }
+
+  /* Brand logo top */
+  .brand {
+    display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
-    color: var(--dark);
+    gap: 14px;
+    position: relative;
+    z-index: 1;
   }
-  .login-card {
-    background: white;
-    width: 100%;
-    max-width: 420px;
+  .brand-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid rgba(250,212,66,0.40);
+  }
+  .brand-icon img { width: 100%; height: 100%; object-fit: cover; }
+  .brand-text strong {
+    display: block;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--yellow);
+    text-transform: uppercase;
+  }
+  .brand-text span {
+    font-size: 11px;
+    color: rgba(255,255,255,0.50);
+    font-weight: 500;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+
+  /* Center hero text */
+  .hero {
+    position: relative;
+    z-index: 1;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(250,212,66,0.15);
+    border: 1px solid rgba(250,212,66,0.30);
     border-radius: 20px;
-    padding: 40px 36px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-    border: 2px solid var(--border);
+    padding: 5px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--yellow);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 22px;
   }
-  .logo {
+  .hero-tag-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--yellow);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.7); }
+  }
+  .hero h1 {
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.12;
+    color: #ffffff;
+    letter-spacing: -1px;
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--yellow);
+  }
+  .hero p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.60);
+    line-height: 1.7;
+    max-width: 340px;
+    font-weight: 500;
+  }
+
+  /* Feature list bottom */
+  .features {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .feature-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 28px;
-  }
-  .logo-icon {
-    width: 48px; height: 48px;
-    background: linear-gradient(135deg, var(--yellow), #FFAB00);
-    border-radius: 13px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-    box-shadow: 0 6px 16px rgba(245,197,24,.4);
-  }
-  .logo strong {
-    font-family: 'Syne', sans-serif;
-    font-size: 19px; font-weight: 800;
-    color: var(--dark);
-    display: block;
-    line-height: 1.2;
-  }
-  .logo span { font-size: 12px; color: var(--gray); }
-  h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-  .subtitle {
-    color: var(--gray);
-    font-size: 14px;
-    margin-bottom: 28px;
-  }
-  .tabs {
-    display: flex;
-    background: #F5F5F5;
-    border-radius: 10px;
-    padding: 4px;
-    margin-bottom: 22px;
-  }
-  .tab {
-    flex: 1; padding: 9px;
-    text-align: center;
-    border-radius: 7px;
-    cursor: pointer;
-    font-size: 13px; font-weight: 600;
-    color: var(--gray);
-    transition: all .2s;
-  }
-  .tab.active {
-    background: var(--yellow);
-    color: var(--dark);
-    box-shadow: 0 2px 6px rgba(245,197,24,.3);
-  }
-  .form-group { margin-bottom: 16px; }
-  label {
-    display: block;
     font-size: 13px;
     font-weight: 600;
+    color: rgba(255,255,255,0.75);
+  }
+  .feature-icon {
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    background: rgba(250,212,66,0.15);
+    border: 1px solid rgba(250,212,66,0.20);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--yellow);
+    flex-shrink: 0;
+  }
+
+  /* ── RIGHT PANEL (form) ── */
+  .right-panel {
+    flex: 1;
+    background: var(--yellow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 40px;
+    position: relative;
+    overflow-y: auto;
+  }
+
+  /* Subtle dot pattern on yellow bg */
+  .right-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(141,30,24,0.08) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    pointer-events: none;
+  }
+
+  /* ── LOGIN CARD ── */
+  .login-card {
+    background: var(--surface);
+    width: 100%;
+    max-width: 400px;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 48px rgba(141,30,24,0.18), 0 2px 8px rgba(141,30,24,0.10);
+    border: 1px solid rgba(141,30,24,0.10);
+    position: relative;
+    z-index: 1;
+    animation: cardIn .5s cubic-bezier(.22,.68,0,1.2) both;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .card-body {
+    padding: 28px 32px 28px;
+  }
+
+  .card-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 4px;
+    letter-spacing: -.3px;
+  }
+  .card-title span { color: var(--red); }
+  .card-sub {
+    font-size: 13px;
+    color: var(--text-hint);
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    background: rgba(141,30,24,0.08);
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 22px;
+    gap: 4px;
+  }
+  .tab {
+    flex: 1;
+    padding: 8px 0;
+    text-align: center;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(141,30,24,0.55);
+    transition: all .2s;
+    user-select: none;
+  }
+  .tab:hover { color: var(--red); }
+  .tab.active {
+    background: var(--surface);
+    color: var(--red);
+    box-shadow: 0 2px 8px rgba(141,30,24,0.12);
+  }
+
+  /* ── ALERTS ── */
+  .alert {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: none;
+    line-height: 1.5;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .alert.show { display: flex; }
+  .alert svg { flex-shrink: 0; margin-top: 1px; }
+  .alert-error {
+    background: rgba(141,30,24,0.07);
+    color: var(--red);
+    border: 1px solid rgba(141,30,24,0.20);
+  }
+  .alert-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+  }
+
+  /* ── FORM ── */
+  .form-group { margin-bottom: 14px; }
+  label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
     margin-bottom: 6px;
-    color: var(--dark);
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .input-wrap { position: relative; }
+  .input-wrap > svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    z-index: 1;
   }
   input {
     width: 100%;
-    padding: 12px 14px;
-    border: 2px solid #F0F0F0;
+    padding: 10px 14px 10px 38px;
+    border: 1.5px solid rgba(141,30,24,0.18);
     border-radius: 10px;
-    font-size: 14px;
-    font-family: inherit;
-    transition: border .2s;
-  }
-  input:focus {
+    font-size: 13.5px;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    color: var(--text-main);
+    background: var(--plan-bg);
+    transition: border-color .2s, background .2s, box-shadow .2s;
     outline: none;
-    border-color: var(--yellow);
   }
+  #password { padding-right: 40px; }
+  input:focus {
+    border-color: var(--red);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(141,30,24,0.08);
+  }
+  input::placeholder { color: var(--text-muted); }
+
+  /* ── EYE TOGGLE ── */
+  .eye-toggle {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none;
+    cursor: pointer;
+    padding: 4px 5px;
+    color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    transition: color .2s, background .2s;
+    line-height: 0;
+    z-index: 2;
+  }
+  .eye-toggle:hover { color: var(--red); background: rgba(141,30,24,0.07); }
+
+  /* ── BUTTON ── */
   .btn {
     width: 100%;
-    padding: 13px;
-    background: linear-gradient(135deg, var(--yellow), var(--yellow-dark));
-    color: var(--dark);
+    padding: 12px;
+    background: linear-gradient(135deg, var(--red) 0%, #a93226 100%);
+    color: white;
     border: none;
-    border-radius: 10px;
-    font-size: 15px;
+    border-radius: 11px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-    margin-top: 8px;
-    box-shadow: 0 4px 12px rgba(245,197,24,.3);
-    transition: transform .1s;
+    margin-top: 4px;
+    box-shadow: 0 6px 20px rgba(141,30,24,0.35);
+    transition: transform .15s, box-shadow .15s, opacity .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Manrope', sans-serif;
+    letter-spacing: .2px;
   }
-  .btn:hover { transform: translateY(-1px); }
-  .btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-  .alert {
-    padding: 11px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 14px;
-    display: none;
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(141,30,24,0.42);
   }
-  .alert.show { display: block; }
-  .alert-error {
-    background: #FDECEA;
-    color: var(--red);
-    border: 1px solid #F5B7B1;
+  .btn:active { transform: translateY(0); }
+  .btn:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 0;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
   }
-  .alert-success {
-    background: #E8F8F0;
-    color: #1E8449;
-    border: 1px solid #A9DFBF;
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(141,30,24,0.12);
   }
+
+  /* ── FOOTER NOTE ── */
   .footer-note {
-    text-align: center;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: var(--plan-bg);
+    border: 1px solid rgba(141,30,24,0.12);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 16px;
     font-size: 12px;
-    color: var(--gray);
-    margin-top: 18px;
+    font-weight: 500;
+    color: var(--text-hint);
+    line-height: 1.55;
+  }
+  .footer-note svg { flex-shrink: 0; margin-top: 1px; color: var(--red); opacity: .6; }
+
+  /* ── LOADING STATE ── */
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  .spinner {
+    width: 16px; height: 16px;
+    border: 2.5px solid rgba(255,255,255,0.35);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    flex-shrink: 0;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    body { flex-direction: column; overflow: auto; }
+    .left-panel { width: 100%; padding: 32px 28px; min-height: auto; }
+    .left-panel::before { width: 240px; height: 240px; top: -60px; right: -60px; }
+    .left-panel::after  { display: none; }
+    .hero h1 { font-size: 28px; }
+    .features { display: none; }
+    .right-panel { padding: 32px 24px; }
+    .login-card { max-width: 100%; }
+    .card-body { padding: 22px 20px; }
   }
 </style>
 </head>
 <body>
-  <div class="login-card">
-    <div class="logo">
-      <div class="logo-icon">👑</div>
-      <div>
-        <strong>Karaengta HRIS</strong>
-        <span>Sistem Manajemen SDM</span>
+
+  <!-- ── LEFT PANEL ── -->
+  <div class="left-panel">
+    <div class="brand">
+      <div class="brand-icon">
+        <img src="data:image/jpeg;base64,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" alt="Karaengta">
+      </div>
+      <div class="brand-text">
+        <strong>Karaengta</strong>
+        <span>HRIS System</span>
       </div>
     </div>
 
-    <h1 id="title">Selamat Datang</h1>
-    <p class="subtitle" id="subtitle">Masuk untuk akses dashboard HR</p>
-
-    <div class="tabs">
-      <div class="tab active" data-mode="login">Login</div>
-      <div class="tab" data-mode="signup">Daftar</div>
+    <div class="hero">
+      <div class="hero-tag">
+        <div class="hero-tag-dot"></div>
+        Sistem Aktif
+      </div>
+      <h1>Kelola SDM<br>dengan <em>Mudah</em><br>&amp; Efisien</h1>
+      <p>Platform HR terpadu untuk rekrutmen, absensi, data karyawan, dan manajemen surat peringatan Karaengta.</p>
     </div>
 
-    <div class="alert alert-error" id="alertError"></div>
-    <div class="alert alert-success" id="alertSuccess"></div>
-
-    <form id="authForm">
-      <div class="form-group" id="nameGroup" style="display:none;">
-        <label for="fullName">Nama Lengkap</label>
-        <input type="text" id="fullName" placeholder="Nama lengkap Anda">
+    <div class="features">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        Manajemen Data Karyawan
       </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" required placeholder="email@karaengta.com">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+        </div>
+        Pipeline Rekrutmen
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" required minlength="6" placeholder="Minimal 6 karakter">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        Rekap Absensi Otomatis
       </div>
-      <button type="submit" class="btn" id="submitBtn">Masuk</button>
-    </form>
-
-    <p class="footer-note">
-      Akun baru perlu diaktifkan oleh admin sebelum dapat akses dashboard.
-    </p>
+    </div>
   </div>
 
-  <!-- Load config sebagai script biasa DULU. Wajib ada sebelum module script. -->
-  <!-- Plain script bekerja di file:// — module script dengan import relatif TIDAK. -->
+  <!-- ── RIGHT PANEL ── -->
+  <div class="right-panel">
+    <div class="login-card">
+      <div class="card-body">
+
+      <div class="card-title" id="cardTitle">Selamat <span>Datang</span></div>
+      <div class="card-sub" id="cardSub">Masuk untuk akses dashboard HR</div>
+
+      <!-- TABS -->
+      <div class="tabs">
+        <div class="tab active" data-mode="login">Login</div>
+        <div class="tab" data-mode="signup">Daftar</div>
+      </div>
+
+      <!-- ALERTS -->
+      <div class="alert alert-error" id="alertError">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        <span id="alertErrorMsg"></span>
+      </div>
+      <div class="alert alert-success" id="alertSuccess">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="alertSuccessMsg"></span>
+      </div>
+
+      <!-- FORM -->
+      <form id="authForm">
+        <!-- Nama (signup only) -->
+        <div class="form-group" id="nameGroup" style="display:none;">
+          <label for="fullName">Nama Lengkap</label>
+          <div class="input-wrap">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+            <input type="text" id="fullName" placeholder="Nama lengkap Anda">
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <div class="input-wrap">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/>
+            </svg>
+            <input type="email" id="email" required placeholder="email@karaengta.com">
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <input type="password" id="password" required minlength="6" placeholder="Minimal 6 karakter">
+            <button type="button" class="eye-toggle" id="eyeToggle" onclick="togglePassword()" tabindex="-1" title="Tampilkan/sembunyikan password">
+              <svg id="eyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" id="submitIcon">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          <span id="submitLabel">Masuk</span>
+        </button>
+      </form>
+
+      <div class="divider">Info</div>
+
+      <div class="footer-note">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Akun baru perlu diaktifkan oleh admin sebelum dapat mengakses dashboard.
+      </div>
+      </div><!-- /.card-body -->
+    </div><!-- /.login-card -->
+  </div>
+
   <script src="./js/config.js"></script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -207,70 +575,67 @@
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY ||
         SUPABASE_URL.includes('YOUR-PROJECT-REF') ||
         SUPABASE_ANON_KEY === 'YOUR-ANON-KEY-HERE') {
-      const err = document.getElementById('alertError');
-      err.textContent = '⚠️ js/config.js belum diisi. Buka file tersebut dan ganti SUPABASE_URL & SUPABASE_ANON_KEY dengan kredensial dari Supabase Dashboard (Project Settings → API).';
-      err.classList.add('show');
+      showError('js/config.js belum diisi. Buka file tersebut dan isi SUPABASE_URL & SUPABASE_ANON_KEY dari Supabase Dashboard.');
       document.getElementById('submitBtn').disabled = true;
-      throw new Error('Supabase config missing or still placeholder');
+      throw new Error('Supabase config missing');
     }
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Cek session existing — kalau sudah login, langsung redirect
     const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      window.location.href = './dashboard.html';
-    }
+    if (session) window.location.href = './dashboard.html';
 
     let mode = 'login';
-    const tabs = document.querySelectorAll('.tab');
-    const title = document.getElementById('title');
-    const subtitle = document.getElementById('subtitle');
-    const submitBtn = document.getElementById('submitBtn');
+    const tabs      = document.querySelectorAll('.tab');
+    const form      = document.getElementById('authForm');
     const nameGroup = document.getElementById('nameGroup');
-    const form = document.getElementById('authForm');
-    const errBox = document.getElementById('alertError');
-    const okBox = document.getElementById('alertSuccess');
+    const submitBtn = document.getElementById('submitBtn');
+    const submitLbl = document.getElementById('submitLabel');
+    const submitIco = document.getElementById('submitIcon');
 
     tabs.forEach(t => t.addEventListener('click', () => {
       mode = t.dataset.mode;
       tabs.forEach(x => x.classList.toggle('active', x === t));
-      if (mode === 'login') {
-        title.textContent = 'Selamat Datang';
-        subtitle.textContent = 'Masuk untuk akses dashboard HR';
-        submitBtn.textContent = 'Masuk';
-        nameGroup.style.display = 'none';
-      } else {
-        title.textContent = 'Buat Akun Baru';
-        subtitle.textContent = 'Daftar untuk akses sistem HRIS';
-        submitBtn.textContent = 'Daftar';
-        nameGroup.style.display = 'block';
-      }
+      const isLogin = mode === 'login';
+      document.getElementById('cardTitle').innerHTML  = isLogin ? 'Selamat <span>Datang</span>' : 'Buat <span>Akun Baru</span>';
+      document.getElementById('cardSub').textContent  = isLogin ? 'Masuk untuk akses dashboard HR' : 'Daftar untuk akses sistem HRIS';
+      submitLbl.textContent = isLogin ? 'Masuk' : 'Daftar';
+      nameGroup.style.display = isLogin ? 'none' : 'block';
       hideAlerts();
     }));
 
     function showError(msg) {
-      okBox.classList.remove('show');
-      errBox.textContent = msg;
-      errBox.classList.add('show');
+      document.getElementById('alertSuccess').classList.remove('show');
+      document.getElementById('alertErrorMsg').textContent = msg;
+      document.getElementById('alertError').classList.add('show');
     }
     function showSuccess(msg) {
-      errBox.classList.remove('show');
-      okBox.textContent = msg;
-      okBox.classList.add('show');
+      document.getElementById('alertError').classList.remove('show');
+      document.getElementById('alertSuccessMsg').textContent = msg;
+      document.getElementById('alertSuccess').classList.add('show');
     }
     function hideAlerts() {
-      errBox.classList.remove('show');
-      okBox.classList.remove('show');
+      document.getElementById('alertError').classList.remove('show');
+      document.getElementById('alertSuccess').classList.remove('show');
+    }
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      if (loading) {
+        submitIco.outerHTML = '<div class="spinner" id="submitIcon"></div>';
+        submitLbl.textContent = mode === 'login' ? 'Memproses…' : 'Mendaftarkan…';
+      } else {
+        document.getElementById('submitIcon').outerHTML = `<svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" id="submitIcon"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>`;
+        submitLbl.textContent = mode === 'login' ? 'Masuk' : 'Daftar';
+        submitBtn.disabled = false;
+      }
     }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlerts();
-      submitBtn.disabled = true;
-      submitBtn.textContent = mode === 'login' ? 'Memproses...' : 'Mendaftarkan...';
+      setLoading(true);
 
-      const email = document.getElementById('email').value.trim();
+      const email    = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       const fullName = document.getElementById('fullName').value.trim();
 
@@ -287,7 +652,6 @@
           const { data, error } = await supabase.auth.signInWithPassword({ email, password });
           if (error) throw error;
 
-          // Cek apakah user aktif
           const { data: hrUser, error: hrErr } = await supabase
             .from('hr_users').select('is_active, role').eq('id', data.user.id).single();
 
@@ -304,11 +668,18 @@
         }
       } catch (err) {
         showError(err.message || 'Terjadi kesalahan. Coba lagi.');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = mode === 'login' ? 'Masuk' : 'Daftar';
+        setLoading(false);
       }
     });
+    window.togglePassword = function() {
+      const input = document.getElementById('password');
+      const icon  = document.getElementById('eyeIcon');
+      const show  = input.type === 'password';
+      input.type  = show ? 'text' : 'password';
+      icon.innerHTML = show
+        ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+        : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    };
   </script>
 </body>
 </html>

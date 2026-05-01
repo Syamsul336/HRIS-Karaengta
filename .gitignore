@@ -20,5 +20,9 @@ Thumbs.db
 *.old
 *~
 
+# md files
+karaengta-style-guide.md
+upload-guide.md
+
 # Catatan: js/config.js BOLEH dicommit karena hanya berisi anon key
 # yang dilindungi RLS. JANGAN commit service_role key.
