@@ -73,7 +73,11 @@
   }
   .logo-text span { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: .5px; text-transform: uppercase; font-weight: 500; }
 
-  .nav-section { padding: 12px 8px 0; flex: 1; overflow-y: auto; }
+  .nav-section { padding: 12px 8px 0; flex: 1; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(250,212,66,.25) transparent; }
+  .nav-section::-webkit-scrollbar { width: 4px; }
+  .nav-section::-webkit-scrollbar-track { background: transparent; }
+  .nav-section::-webkit-scrollbar-thumb { background: rgba(250,212,66,.25); border-radius: 99px; }
+  .nav-section::-webkit-scrollbar-thumb:hover { background: rgba(250,212,66,.45); }
   .nav-label {
     font-size: 10px; font-weight: 700; letter-spacing: 1.4px;
     color: rgba(250,212,66,.35); text-transform: uppercase;
@@ -207,6 +211,25 @@
   @keyframes dotBounce {
     0%, 80%, 100% { transform: scale(0.7); opacity: .4; }
     40%            { transform: scale(1.2); opacity: 1; }
+  }
+
+  /* ── PAGE-LEVEL LOADER (lazy load) ── */
+  .page-loader {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px 0; gap: 14px;
+  }
+  .page-loader-dots { display: flex; gap: 7px; }
+  .page-loader-dots span {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--red); opacity: .25;
+    animation: dotBounce 1.2s ease-in-out infinite;
+  }
+  .page-loader-dots span:nth-child(2) { animation-delay: .15s; }
+  .page-loader-dots span:nth-child(3) { animation-delay: .30s; }
+  .page-loader-text {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-hint); letter-spacing: .3px;
   }
 
   /* ── HEADER ── */
@@ -554,13 +577,14 @@
   }
 
   /* ── GRIDS ── */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  #rek-recent, #kontrak-expiry { max-height: 340px; overflow-y: auto; padding-right: 2px; }
   .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
   .mb-24 { margin-bottom: 24px; }
   .mb-20 { margin-bottom: 20px; }
 
   /* ── DONUT ── */
-  .donut-wrap { display: flex; align-items: center; gap: 20px; }
+  .donut-wrap { display: flex; align-items: center; gap: 20px; min-height: 110px; }
   .donut-legend { flex: 1; }
   .legend-item {
     display: flex; align-items: center; gap: 8px;
@@ -622,6 +646,28 @@
   .btn-primary:hover { background: var(--red-dark); }
   .btn-secondary { background: var(--yellow); color: var(--red); }
   .btn-secondary:hover { background: var(--yellow-dark); }
+
+  /* Tombol aksi utama di section header — merah supaya kontras dgn bg kuning */
+  .btn-action {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: all .2s;
+    box-shadow: 0 3px 10px rgba(141,30,24,.30);
+    white-space: nowrap;
+  }
+  .btn-action:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(141,30,24,.40);
+  }
+  .btn-action:active { transform: translateY(0); box-shadow: 0 2px 6px rgba(141,30,24,.25); }
   .btn-ghost     { border: 1.5px solid var(--red); color: var(--red); background: transparent; }
   .btn-ghost:hover { background: rgba(141,30,24,.06); }
   /* aliases */
@@ -689,20 +735,27 @@
   .progress-fill { height: 100%; border-radius: 99px; background: var(--red); }
 
   /* ── BAR CHART ── */
+  .bar-chart-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    overflow-y: hidden;
+  }
   .bar-chart {
     display: flex;
     align-items: flex-end;
-    gap: 10px;
+    gap: 8px;
     height: 120px;
-    padding-top: 20px;
+    padding-top: 16px;
     position: relative;
+    min-width: max-content;
   }
   /* Horizontal grid lines */
   .bar-chart::before {
     content: '';
     position: absolute;
     left: 0; right: 0;
-    top: 20px; bottom: 22px;
+    top: 16px; bottom: 22px;
     background:
       repeating-linear-gradient(
         to bottom,
@@ -714,11 +767,11 @@
     pointer-events: none;
   }
   .bar-item {
-    flex: 1;
+    flex: 0 0 64px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     position: relative;
   }
   .bar-val {
@@ -752,7 +805,7 @@
     pointer-events: none;
   }
   .bar-lbl {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-hint);
     font-weight: 600;
     white-space: nowrap;
@@ -764,9 +817,8 @@
 
   /* ── PIPELINE ── */
   .pipeline {
-    display: flex; gap: 12px;
-    overflow-x: auto; padding-bottom: 6px;
-    -webkit-overflow-scrolling: touch;
+    display: block;
+    width: 100%;
   }
   .pipeline-col {
     min-width: 190px; flex: 0 0 190px;
@@ -798,14 +850,746 @@
   .pipeline-card-name { font-weight: 700; margin-bottom: 3px; }
   .pipeline-card-pos { color: var(--text-hint); font-size: 11px; margin-bottom: 5px; }
   .pipeline-card-date { color: var(--text-muted); font-size: 10px; }
-  .col-screening .pipeline-col-title { color: #7a5200; }
-  .col-interview .pipeline-col-title { color: #2e7d32; }
-  .col-ttd .pipeline-col-title { color: #1d4e89; }
-  .col-join .pipeline-col-title { color: var(--red); }
-  .col-screening { background: #FFFDF0; border-color: #f0e0a0; }
-  .col-interview { background: #f0faf2; border-color: #c8e6c9; }
-  .col-ttd { background: #f0f4ff; border-color: #90caf9; }
-  .col-join { background: rgba(141,30,24,.04); border-color: rgba(141,30,24,.20); }
+
+  /* ── PIPELINE NEW DESIGN ── */
+  .pipeline-wrap { display: flex; flex-direction: column; gap: 0; }
+
+  .pipeline-search-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 0 16px; flex-wrap: wrap;
+  }
+
+  /* Stage tabs — horizontal scrollable strip */
+  .pipeline-tabs {
+    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 12px;
+    scrollbar-width: thin; scrollbar-color: rgba(141,30,24,.15) transparent;
+    border-bottom: 2px solid var(--border); margin-bottom: 20px;
+  }
+  .pipeline-tabs::-webkit-scrollbar { height: 3px; }
+  .pipeline-tabs::-webkit-scrollbar-thumb { background: rgba(141,30,24,.2); border-radius:99px; }
+
+  .pipeline-tab {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 10px; border: 1.5px solid var(--border);
+    background: var(--surface); font-size: 12px; font-weight: 600;
+    color: var(--text-hint); cursor: pointer; white-space: nowrap;
+    font-family: 'Manrope', sans-serif; transition: all .18s;
+    flex-shrink: 0;
+  }
+  .pipeline-tab:hover { border-color: var(--stage-color); color: var(--stage-color); }
+  .pipeline-tab.active {
+    background: var(--stage-color); border-color: var(--stage-color);
+    color: white; box-shadow: 0 3px 10px color-mix(in srgb, var(--stage-color) 30%, transparent);
+  }
+  .pipeline-tab.active .pipeline-tab-count { background: rgba(255,255,255,.25); color: white; }
+  .pipeline-tab-count {
+    border-radius: 20px; padding: 1px 8px; font-size: 11px; font-weight: 700;
+    transition: all .18s;
+    min-width: 22px; text-align: center;
+  }
+
+  /* Cards grid */
+  .pipeline-cards-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px; align-items: start;
+  }
+  .pipeline-pos-section { display: flex; flex-direction: column; gap: 8px; }
+  .pipeline-pos-header {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 12px; font-weight: 700; color: var(--text-main);
+    padding: 6px 10px; background: var(--bg); border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .pipeline-card {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 12px 14px; cursor: pointer;
+    transition: all .18s;
+    color: var(--text-main);
+  }
+  .pipeline-card:hover { border-color: var(--red); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(141,30,24,.10); }
+  .pipeline-empty {
+    text-align: center; padding: 48px 24px; color: #bbb;
+    grid-column: 1 / -1;
+  }
+
+
+  /* ── PAGE-LEVEL LOADER (lazy load) ── */
+  .page-loader {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 60px 0; gap: 14px;
+  }
+  .page-loader-dots { display: flex; gap: 7px; }
+  .page-loader-dots span {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--red); opacity: .25;
+    animation: dotBounce 1.2s ease-in-out infinite;
+  }
+  .page-loader-dots span:nth-child(2) { animation-delay: .15s; }
+  .page-loader-dots span:nth-child(3) { animation-delay: .30s; }
+  .page-loader-text {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-hint); letter-spacing: .3px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    position: fixed; top: 0; right: 0;
+    left: var(--sidebar-w);
+    height: var(--header-h);
+    background: #1a0a09;
+    border-bottom: 1px solid rgba(250,212,66,0.15);
+    display: flex; align-items: center;
+    padding: 0 22px;
+    z-index: 90;
+    gap: 14px;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  }
+  .hamburger {
+    display: none;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    cursor: pointer;
+    padding: 6px 9px; border-radius: 9px;
+    color: rgba(255,255,255,0.85);
+    transition: background .2s;
+    align-items: center; justify-content: center;
+  }
+  .hamburger:hover { background: rgba(255,255,255,0.14); }
+
+  .header-greeting {
+    flex: 1;
+    font-size: 14px; color: rgba(255,255,255,0.60); font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .header-greeting strong { color: var(--yellow); font-weight: 800; }
+
+  .header-user {
+    display: flex; align-items: center; gap: 9px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 5px 12px 5px 5px;
+    cursor: pointer;
+    transition: background .2s;
+  }
+  .header-user:hover { background: rgba(255,255,255,0.14); }
+
+  .header-avatar {
+    width: 32px; height: 32px;
+    background: var(--yellow);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--red); font-size: 11px; font-weight: 900;
+    flex-shrink: 0;
+    letter-spacing: .5px;
+  }
+  .header-user-name { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.90); line-height: 1.25; white-space: nowrap; }
+  .header-user-plan { font-size: 10px; font-weight: 600; color: var(--yellow); text-transform: capitalize; opacity: .85; }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    margin-top: var(--header-h);
+    padding: 32px;
+    min-height: calc(100vh - var(--header-h));
+    background: var(--bg);
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity:.6; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; flex-wrap: wrap; gap: 10px;
+  }
+  .section-title { font-size: 24px; font-weight: 700; color: var(--text-main); }
+  .section-sub { font-size: 13px; color: var(--text-hint); margin-top: 2px; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -400px 0; }
+    100% { background-position: 400px 0; }
+  }
+  @keyframes pulseAccent {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+  }
+  @keyframes progressGrow {
+    from { width: 0 !important; }
+  }
+  @keyframes rowFadeIn {
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes donutDraw {
+    from { stroke-dashoffset: 500; opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  .anim-slide-up    { animation: slideUp .5s cubic-bezier(.22,.68,0,1.2) both; }
+  .anim-scale-in    { animation: scaleIn .45s cubic-bezier(.22,.68,0,1.2) both; }
+  .anim-slide-right { animation: slideRight .45s cubic-bezier(.22,.68,0,1.2) both; }
+
+  /* stagger delays */
+  .delay-1  { animation-delay: .05s; }
+  .delay-2  { animation-delay: .12s; }
+  .delay-3  { animation-delay: .19s; }
+  .delay-4  { animation-delay: .26s; }
+  .delay-5  { animation-delay: .33s; }
+  .delay-6  { animation-delay: .40s; }
+  .delay-7  { animation-delay: .47s; }
+
+  /* ── SCROLL-TRIGGERED: cards & sections ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .55s cubic-bezier(.22,.68,0,1.2),
+                transform .55s cubic-bezier(.22,.68,0,1.2);
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal.visible.delay-r1 { transition-delay: .04s; }
+  .reveal.visible.delay-r2 { transition-delay: .10s; }
+  .reveal.visible.delay-r3 { transition-delay: .16s; }
+  .reveal.visible.delay-r4 { transition-delay: .22s; }
+
+  /* Bar chart bars grow from bottom — via JS height animation */
+
+  /* Progress fills slide from left */
+  .progress-fill {
+    transition: width .8s cubic-bezier(.22,.68,0,1.2) !important;
+  }
+
+  /* Table rows fade in staggered */
+  .anim-row {
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .anim-row.row-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* ── STAT CARDS (colored KPI) ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px; margin-bottom: 28px;
+  }
+  .stat-card-new {
+    border-radius: 20px;
+    padding: 22px 20px 18px;
+    position: relative;
+    display: flex; flex-direction: column;
+    min-height: 148px;
+    overflow: hidden;
+    cursor: pointer;
+    isolation: isolate;
+    transition: transform .28s cubic-bezier(.22,.68,0,1.2),
+                box-shadow .28s cubic-bezier(.22,.68,0,1.2),
+                filter .28s ease;
+    will-change: transform, box-shadow;
+  }
+
+  /* Decorative circles */
+  .stat-card-new::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 110px; height: 110px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.10);
+    transition: transform .28s cubic-bezier(.22,.68,0,1.2),
+                background .28s ease;
+  }
+  .stat-card-new::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: 20px;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    transition: transform .28s cubic-bezier(.22,.68,0,1.2);
+  }
+  .stat-card-new:hover::before {
+    transform: scale(1.25) translate(-8px, 8px);
+    background: rgba(255,255,255,0.18);
+  }
+  .stat-card-new:hover::after {
+    transform: scale(1.3) translate(6px, -6px);
+  }
+
+  /* Card 1 – Karyawan Aktif */
+  .stat-card-new.kpi-1 {
+    background: linear-gradient(135deg, #8D1E18 0%, #a93226 100%);
+    box-shadow: 0 6px 24px rgba(141,30,24,0.32);
+  }
+  .stat-card-new.kpi-1:hover {
+    transform: translateY(-12px) scale(1.025);
+    box-shadow: 0 24px 52px rgba(141,30,24,0.55),
+                0 8px 20px rgba(141,30,24,0.30);
+    filter: brightness(1.10);
+  }
+
+  /* Card 2 – Resign */
+  .stat-card-new.kpi-2 {
+    background: linear-gradient(135deg, #5a1a16 0%, #7a2419 100%);
+    box-shadow: 0 6px 24px rgba(90,26,22,0.32);
+  }
+  .stat-card-new.kpi-2:hover {
+    transform: translateY(-12px) scale(1.025);
+    box-shadow: 0 24px 52px rgba(90,26,22,0.55),
+                0 8px 20px rgba(90,26,22,0.30);
+    filter: brightness(1.12);
+  }
+
+  /* Card 3 – Kandidat: yellow-gold */
+  .stat-card-new.kpi-3 {
+    background: linear-gradient(135deg, #e6b800 0%, #FAD442 100%);
+    box-shadow: 0 6px 24px rgba(150,120,0,0.35);
+  }
+  .stat-card-new.kpi-3:hover {
+    transform: translateY(-12px) scale(1.025);
+    box-shadow: 0 24px 52px rgba(150,120,0,0.60),
+                0 8px 20px rgba(150,120,0,0.35);
+    filter: brightness(1.06) saturate(1.15);
+  }
+
+  /* Card 4 – Bergabung */
+  .stat-card-new.kpi-4 {
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 100%);
+    box-shadow: 0 6px 24px rgba(192,57,43,0.32);
+  }
+  .stat-card-new.kpi-4:hover {
+    transform: translateY(-12px) scale(1.025);
+    box-shadow: 0 24px 52px rgba(192,57,43,0.55),
+                0 8px 20px rgba(192,57,43,0.30);
+    filter: brightness(1.10);
+  }
+
+  /* Card 5 – SP */
+  .stat-card-new.kpi-5 {
+    background: linear-gradient(135deg, #3d0e0a 0%, #6b1510 100%);
+    box-shadow: 0 6px 24px rgba(61,14,10,0.35);
+  }
+  .stat-card-new.kpi-5:hover {
+    transform: translateY(-12px) scale(1.025);
+    box-shadow: 0 24px 52px rgba(61,14,10,0.58),
+                0 8px 20px rgba(61,14,10,0.32);
+    filter: brightness(1.14);
+  }
+
+  .stat-card-new .stat-accent {
+    position: absolute; left: 20px; top: 22px;
+    width: 4px; height: 32px;
+    background: rgba(255,255,255,0.50);
+    border-radius: 20px;
+  }
+
+  .stat-card-icon {
+    position: absolute;
+    top: 16px; right: 18px;
+    width: 38px; height: 38px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.85);
+    backdrop-filter: blur(4px);
+    z-index: 1;
+  }
+  .kpi-3 .stat-card-icon { color: rgba(60,40,0,0.65); background: rgba(0,0,0,0.10); }
+
+  .stat-card-new .stat-label-new {
+    font-size: 13px; font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.35;
+    margin-left: 16px;
+    padding-right: 52px;
+    letter-spacing: .1px;
+  }
+  .stat-card-new.kpi-3 .stat-label-new { color: rgba(90,62,0,0.80); }
+
+  .stat-card-new .stat-num-new {
+    font-size: 48px; font-weight: 800;
+    color: #ffffff;
+    text-align: right;
+    margin-top: auto;
+    line-height: 1;
+    letter-spacing: -2px;
+    animation: countUp .6s cubic-bezier(.22,.68,0,1.2) both;
+  }
+  .stat-card-new.kpi-3 .stat-num-new { color: #3a2800; }
+
+  .stat-card-new .stat-sub-new {
+    font-size: 11px; font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    text-align: right;
+    margin-top: 5px;
+  }
+  .stat-card-new.kpi-3 .stat-sub-new { color: rgba(90,62,0,0.60); }
+
+  /* ── CARDS (white surface) ── */
+  .card {
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(141,30,24,0.08);
+    border: 1px solid rgba(141,30,24,0.07);
+    transition: box-shadow .2s;
+  }
+  .card:hover { box-shadow: 0 8px 32px rgba(141,30,24,0.12); }
+  .card-title {
+    font-size: 16px; font-weight: 700;
+    color: var(--text-main); margin-bottom: 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+  }
+  .card-title-left { display: flex; align-items: center; gap: 8px; }
+  .card-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red); flex-shrink: 0;
+  }
+  .card-link {
+    font-size: 13px; font-weight: 500; color: var(--red);
+    text-decoration: none; cursor: pointer;
+  }
+
+  /* ── GRIDS ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .mb-24 { margin-bottom: 24px; }
+  .mb-20 { margin-bottom: 20px; }
+
+  /* ── DONUT ── */
+  .donut-wrap { display: flex; align-items: center; gap: 20px; min-height: 110px; }
+  .donut-legend { flex: 1; }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 8px; font-size: 13px;
+  }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .legend-val { margin-left: auto; font-weight: 700; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; border-radius: 16px; overflow: hidden; border: 1px solid rgba(141,30,24,0.12); }
+  th {
+    background: var(--red);
+    font-size: 12px; font-weight: 600;
+    color: white;
+    padding: 12px 16px; text-align: left;
+    white-space: nowrap;
+  }
+  th:first-child { border-radius: 0; }
+  td {
+    padding: 11px 16px;
+    font-size: 13px; color: var(--text-main);
+    border-bottom: 1px solid rgba(141,30,24,0.08);
+    vertical-align: middle;
+  }
+  tr:nth-child(odd) td { background: var(--plan-bg); }
+  tr:nth-child(even) td { background: var(--surface); }
+  tr:hover td { background: rgba(250,212,66,0.25) !important; }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-aktif  { background: #e8f5e9; color: #2e7d32; }
+  .badge-resign { background: rgba(141,30,24,.10); color: var(--red); }
+  .badge-probation { background: #fef3e2; color: #854d0e; }
+  .badge-contract  { background: #e8f0fe; color: #1d4e89; }
+  .badge-sp1 { background: #fef3e2; color: #854d0e; }
+  .badge-sp2 { background: rgba(141,30,24,.10); color: var(--red); }
+  .badge-sp3 { background: var(--red); color: white; }
+  .badge-yellow { background: var(--plan-bg); color: #7a5200; }
+  .badge-gray   { background: var(--stat-bg); color: var(--red); }
+  .badge-default { background: var(--stat-bg); color: var(--red); border-radius: 20px; padding: 3px 10px; font-size: 11px; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    padding: 8px 18px; border-radius: 10px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; border: none;
+    font-family: 'Manrope', sans-serif;
+    transition: all .2s; white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary   { background: var(--red); color: white; }
+  .btn-primary:hover { background: var(--red-dark); }
+  .btn-secondary { background: var(--yellow); color: var(--red); }
+  .btn-secondary:hover { background: var(--yellow-dark); }
+
+  /* Tombol aksi utama di section header — merah supaya kontras dgn bg kuning */
+  .btn-action {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 10px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: all .2s;
+    box-shadow: 0 3px 10px rgba(141,30,24,.30);
+    white-space: nowrap;
+  }
+  .btn-action:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(141,30,24,.40);
+  }
+  .btn-action:active { transform: translateY(0); box-shadow: 0 2px 6px rgba(141,30,24,.25); }
+  .btn-ghost     { border: 1.5px solid var(--red); color: var(--red); background: transparent; }
+  .btn-ghost:hover { background: rgba(141,30,24,.06); }
+  /* aliases */
+  .btn-yellow { background: var(--yellow); color: var(--red); border: none; }
+  .btn-yellow:hover { background: var(--yellow-dark); }
+  .btn-red { background: var(--red); color: white; border: none; }
+  .btn-red:hover { background: var(--red-dark); }
+  .btn-outline { border: 1.5px solid var(--border); color: var(--text-main); background: white; }
+  .btn-outline:hover { border-color: var(--red); }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 4px;
+    background: rgba(141,30,24,0.18);
+    border-radius: 12px; padding: 4px;
+    width: fit-content;
+    margin-bottom: 20px;
+  }
+  .tab {
+    padding: 8px 16px; border-radius: 10px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    color: rgba(141,30,24,0.70);
+    transition: all .2s;
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tab:hover { color: var(--red); background: rgba(141,30,24,0.10); }
+  .tab.active { background: var(--surface); color: var(--red); box-shadow: 0 2px 8px rgba(141,30,24,0.15); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── TOOLBAR / SEARCH ── */
+  .toolbar {
+    display: flex; align-items: center;
+    gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .search-input {
+    flex: 1; min-width: 180px;
+    padding: 9px 14px;
+    border: 1px solid rgba(141,30,24,.20);
+    border-radius: 10px; font-size: 13px;
+    font-family: 'Manrope', sans-serif;
+    background: white; outline: none;
+    transition: border-color .2s;
+    color: var(--text-main);
+  }
+  .search-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(141,30,24,.08); }
+  .search-input::placeholder { color: var(--text-muted); }
+  .select-filter {
+    padding: 9px 12px; border-radius: 10px;
+    border: 1px solid rgba(141,30,24,.20);
+    font-size: 13px; background: white;
+    font-family: 'Manrope', sans-serif;
+    outline: none; cursor: pointer;
+    color: var(--text-main);
+  }
+  .select-filter:focus { border-color: var(--red); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    height: 5px; background: rgba(141,30,24,0.10); border-radius: 99px;
+    overflow: hidden; margin-top: 6px;
+  }
+  .progress-fill { height: 100%; border-radius: 99px; background: var(--red); }
+
+  /* ── BAR CHART ── */
+  .bar-chart-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+    overflow-y: hidden;
+  }
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 120px;
+    padding-top: 16px;
+    position: relative;
+    min-width: max-content;
+  }
+  /* Horizontal grid lines */
+  .bar-chart::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 16px; bottom: 22px;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(141,30,24,0.07) 0px,
+        rgba(141,30,24,0.07) 1px,
+        transparent 1px,
+        transparent 33%
+      );
+    pointer-events: none;
+  }
+  .bar-item {
+    flex: 0 0 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    position: relative;
+  }
+  .bar-val {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--red);
+    line-height: 1;
+  }
+  .bar-track {
+    width: 100%;
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+  }
+  .bar {
+    width: 100%;
+    border-radius: 6px 6px 0 0;
+    min-height: 3px;
+    height: 0;
+    transition: none;
+    position: relative;
+  }
+  .bar::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 30%;
+    background: rgba(255,255,255,0.18);
+    border-radius: 6px 6px 0 0;
+    pointer-events: none;
+  }
+  .bar-lbl {
+    font-size: 9px;
+    color: var(--text-hint);
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    text-align: center;
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    display: block;
+    width: 100%;
+  }
+  .pipeline-col {
+    min-width: 190px; flex: 0 0 190px;
+    border-radius: 16px; padding: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .pipeline-col-title {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px;
+    color: var(--text-hint); margin-bottom: 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .pipeline-col-count {
+    background: var(--red); color: white;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 6px;
+  }
+  .pipeline-card {
+    background: var(--plan-bg);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 7px;
+    border: 1px solid rgba(141,30,24,0.10);
+    font-size: 12.5px;
+    transition: all .2s;
+  }
+  .pipeline-card:hover { border-color: var(--red); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(141,30,24,.12); }
+  .pipeline-card-name { font-weight: 700; margin-bottom: 3px; }
+  .pipeline-card-pos { color: var(--text-hint); font-size: 11px; margin-bottom: 5px; }
+  .pipeline-card-date { color: var(--text-muted); font-size: 10px; }
+
+  /* ── PIPELINE STAGE BOARD (scrollable horizontal) ── */
+  .pipeline-stage-board {
+    display: flex; gap: 12px;
+    overflow-x: auto; padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(141,30,24,.2) transparent;
+  }
+  .pipeline-stage-board::-webkit-scrollbar { height: 4px; }
+  .pipeline-stage-board::-webkit-scrollbar-thumb { background: rgba(141,30,24,.2); border-radius:99px; }
+  .pipeline-stage-board .pipeline-col { min-width: 180px; flex: 0 0 180px; max-height: 70vh; overflow-y: auto; }
+
+  /* ── PIPELINE POSISI VIEW ── */
+  .pipeline-posisi-group {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px 18px; margin-bottom: 14px;
+  }
+  .pipeline-posisi-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .pipeline-posisi-name { font-size: 15px; font-weight: 700; color: var(--text-main); }
+  .pipeline-posisi-rows { display: flex; flex-direction: column; gap: 8px; }
+  .pipeline-stage-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-left: auto; }
+
+  /* ── VIEW TOGGLE BUTTONS ── */
+  .pipeline-view-btn {
+    padding: 6px 14px; border-radius: 9px; border: 1px solid var(--border);
+    background: transparent; font-size: 12px; font-weight: 600;
+    color: var(--text-hint); cursor: pointer; font-family: 'Manrope', sans-serif;
+    transition: all .2s;
+  }
+  .pipeline-view-btn:hover { border-color: var(--red); color: var(--red); }
+  .pipeline-view-btn.active { background: var(--red); color: white; border-color: var(--red); }
+
+  /* ── PIPELINE SEARCH ── */
+  .pipeline-toolbar {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 16px; flex-wrap: wrap;
+  }
 
   /* ── EMPLOYEE CARDS ── */
   .emp-grid {
@@ -960,18 +1744,22 @@
   }
 </style>
 </head>
+</style>
+</head>
 <body>
 
 <div id="loading-bar-wrap"><div id="loading-bar"></div></div>
-
 <div id="loading-overlay">
   <div class="loading-logo">
-    <img src="data:image/jpeg;base64,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" alt="">
+    <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+      <rect width="56" height="56" rx="14" fill="#8D1E18"/>
+      <rect x="10" y="10" width="16" height="36" rx="3" fill="#FAD442"/>
+      <rect x="30" y="10" width="16" height="24" rx="3" fill="#FAD442" opacity=".7"/>
+      <rect x="30" y="38" width="16" height="8" rx="3" fill="#FAD442" opacity=".4"/>
+    </svg>
   </div>
   <div class="loading-label">Memuat Data</div>
-  <div class="loading-dots">
-    <span></span><span></span><span></span>
-  </div>
+  <div class="loading-dots"><span></span><span></span><span></span></div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
@@ -980,379 +1768,547 @@
 <nav class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-mark">
-      <div class="logo-icon">
-        <img src="data:image/jpeg;base64,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" alt="Karaengta Logo">
-      </div>
-      <div class="logo-text">
-        <strong>Karaengta</strong>
-        <span>HRIS System</span>
-      </div>
+      <div class="logo-icon"><img src="./images/icon_karaengta.jpg" alt="Karaengta" onerror="this.style.display='none'"></div>
+      <div class="logo-text"><strong>Karaengta</strong><span>HRIS System</span></div>
     </div>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Utama</div>
-    <div class="nav-item active" onclick="navTo('dashboard', this)">
-      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> Dashboard
+    <div class="nav-item active" onclick="navTo('dashboard',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span> Dashboard
     </div>
-
     <div class="nav-label" style="margin-top:10px">Rekrutmen</div>
-    <div class="nav-item" onclick="navTo('rekrutmen', this)">
-      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></span> Pipeline Kandidat
-      <span class="nav-badge" id="badge-rekrutmen">10</span>
+    <div class="nav-item" onclick="navTo('job-openings',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span> Posisi & ATS
     </div>
-
+    <div class="nav-item" onclick="navTo('rekrutmen',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></span> Pipeline Kandidat
+      <span class="nav-badge" id="badge-rekrutmen">0</span>
+    </div>
     <div class="nav-label" style="margin-top:10px">Karyawan</div>
-    <div class="nav-item" onclick="navTo('karyawan', this)">
-      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Data Karyawan
+    <div class="nav-item" onclick="navTo('karyawan',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span> Data Karyawan
     </div>
-    <div class="nav-item" onclick="navTo('absensi', this)">
-      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span> Absensi
+    <div class="nav-item" onclick="navTo('absensi',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span> Absensi
     </div>
-    <div class="nav-item" onclick="navTo('sp', this)">
-      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> Surat Peringatan
-      <span class="nav-badge" id="badge-sp">8</span>
+    <div class="nav-item" onclick="navTo('sp',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span> Surat Peringatan
+      <span class="nav-badge" id="badge-sp">0</span>
+    </div>
+    <div class="nav-label" style="margin-top:10px">Administrasi</div>
+    <div class="nav-item" onclick="navTo('payroll',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span> Penggajian
+    </div>
+    <div class="nav-item" onclick="navTo('overtime',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><line x1="21" y1="12" x2="19" y2="12"/></svg></span> Lembur
+    </div>
+    <div class="nav-item" onclick="navTo('training',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span> Training
+    </div>
+    <div class="nav-label" style="margin-top:10px">Pengembangan</div>
+    <div class="nav-item" onclick="navTo('riwayat',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span> Riwayat Mutasi
+    </div>
+    <div class="nav-item" onclick="navTo('cuti',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/></svg></span> Cuti
+    </div>
+    <div class="nav-item" onclick="navTo('kpi',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span> Penilaian Kinerja
+    </div>
+    <div class="nav-label" style="margin-top:10px">Sistem</div>
+    <div class="nav-item" onclick="navTo('analytics',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> Analitik
+    </div>
+    <div class="nav-item" onclick="navTo('absensi-harian',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> Absensi Harian
+    </div>
+    <div class="nav-item" onclick="navTo('dokumen',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span> Dokumen
+    </div>
+    <div class="nav-item" onclick="navTo('offboarding',this)">
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Offboarding
+    </div>
+    <div class="nav-item" onclick="navTo('users',this)" data-requires-admin>
+      <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/><line x1="12" y1="12" x2="12" y2="21"/><line x1="9" y1="18" x2="15" y2="18"/></svg></span> Kelola User
     </div>
   </div>
-
   <div class="sidebar-upgrade">
     <div class="sidebar-upgrade-title">Karaengta HRIS</div>
-    <div class="sidebar-upgrade-sub">v1.0 · Oktober 2025</div>
+    <div class="sidebar-upgrade-sub">v2.0 · 2026</div>
     <button class="sidebar-upgrade-btn" onclick="logout()">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Keluar
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Keluar
     </button>
   </div>
 </nav>
 
 <!-- HEADER -->
 <header class="header">
-  <button class="hamburger" id="hamburger-btn" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-  <div class="header-greeting">
-    Halo, <strong id="user-badge">Tim HRD</strong> — selamat datang kembali!
-  </div>
+  <button class="hamburger" onclick="toggleSidebar()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+  <div class="header-greeting">Halo, <strong id="user-badge">Tim HRD</strong> — selamat datang!</div>
   <div class="header-user">
     <div class="header-avatar" id="header-avatar">HR</div>
     <div class="header-user-info">
       <div class="header-user-name">Tim HRD</div>
       <div class="header-user-plan">HR Manager</div>
     </div>
-    <span style="color:rgba(255,255,255,.35);display:flex;align-items:center;margin-left:4px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
   </div>
 </header>
 
-<!-- MAIN -->
 <main class="main">
 
-  <!-- ═══ DASHBOARD ═══ -->
-  <div class="page active" id="page-dashboard">
-    <div class="welcome-header anim-slide-right delay-1">
-      <h1>Dashboard <span>HRIS</span> Karaengta</h1>
-      <p>Ringkasan aktivitas SDM Karaengta — Maros · Oktober 2025</p>
-    </div>
-
-    <div class="stats-grid">
-      <div class="stat-card-new kpi-1 anim-slide-up delay-1">
-        <div class="stat-accent"></div>
-        <div class="stat-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <div class="stat-label-new">Karyawan Aktif</div>
-        <div class="stat-num-new" id="st-aktif">—</div>
-        <div class="stat-sub-new" id="st-aktif-sub"></div>
-      </div>
-      <div class="stat-card-new kpi-2 anim-slide-up delay-2">
-        <div class="stat-accent"></div>
-        <div class="stat-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        </div>
-        <div class="stat-label-new">Resign Bulan Ini</div>
-        <div class="stat-num-new" id="st-resign">—</div>
-        <div class="stat-sub-new">Okt 2025</div>
-      </div>
-      <div class="stat-card-new kpi-3 anim-slide-up delay-3">
-        <div class="stat-accent"></div>
-        <div class="stat-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
-        </div>
-        <div class="stat-label-new">Total Kandidat</div>
-        <div class="stat-num-new" id="st-kandidat">—</div>
-        <div class="stat-sub-new" id="st-kandidat-sub"></div>
-      </div>
-      <div class="stat-card-new kpi-4 anim-slide-up delay-4">
-        <div class="stat-accent"></div>
-        <div class="stat-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        </div>
-        <div class="stat-label-new">Bergabung</div>
-        <div class="stat-num-new" id="st-join">—</div>
-        <div class="stat-sub-new">Dari rekrutmen terbaru</div>
-      </div>
-      <div class="stat-card-new kpi-5 anim-slide-up delay-5">
-        <div class="stat-accent"></div>
-        <div class="stat-card-icon">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
-        <div class="stat-label-new">Surat Peringatan</div>
-        <div class="stat-num-new" id="st-sp">—</div>
-        <div class="stat-sub-new">Okt–Nov 2025</div>
-      </div>
-    </div>
-
-    <div class="grid-2 mb-24">
-      <div class="card anim-slide-up delay-3 reveal delay-r1">
-        <div class="card-title">
-          <div class="card-title-left"><div class="card-dot"></div> Status Karyawan</div>
-        </div>
-        <div class="donut-wrap">
-          <svg width="100" height="100" viewBox="0 0 100 100" id="donut-svg">
-            <circle cx="50" cy="50" r="38" fill="none" stroke="rgba(141,30,24,0.10)" stroke-width="14"/>
-          </svg>
-          <div class="donut-legend" id="donut-legend"></div>
-        </div>
-      </div>
-
-      <div class="card anim-slide-up delay-4 reveal delay-r2">
-        <div class="card-title">
-          <div class="card-title-left"><div class="card-dot"></div> Kandidat per Posisi</div>
-        </div>
-        <div class="bar-chart" id="posisi-chart"></div>
-        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap" id="posisi-legend"></div>
-      </div>
-    </div>
-
-    <div class="grid-2 mb-24">
-      <div class="card anim-slide-up delay-5 reveal delay-r1">
-        <div class="card-title">
-          <div class="card-title-left"><div class="card-dot"></div> Rekrutmen Terbaru</div>
-        </div>
-        <div id="rek-recent"></div>
-      </div>
-      <div class="card anim-slide-up delay-6 reveal delay-r2">
-        <div class="card-title">
-          <div class="card-title-left"><div class="card-dot"></div> Kontrak Segera Berakhir</div>
-        </div>
-        <div id="kontrak-expiry"></div>
-      </div>
-    </div>
-
-    <div class="card mb-24 anim-slide-up delay-7 reveal delay-r1">
-      <div class="card-title">
-        <div class="card-title-left"><div class="card-dot"></div> Absensi Highlight — Oktober 2025</div>
-      </div>
-      <div class="table-wrap">
-        <table id="att-dash-table"></table>
-      </div>
+<!-- ═══ DASHBOARD ═══ -->
+<div class="page active" id="page-dashboard">
+  <div class="welcome-header anim-slide-right delay-1">
+    <h1>Dashboard <span>HRIS</span> Karaengta</h1>
+    <p>Ringkasan aktivitas SDM Karaengta</p>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card-new kpi-1 anim-slide-up delay-1"><div class="stat-accent"></div><div class="stat-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="stat-label-new">Karyawan Aktif</div><div class="stat-num-new" id="st-aktif" data-val="0">0</div><div class="stat-sub-new" id="st-aktif-sub"></div></div>
+    <div class="stat-card-new kpi-2 anim-slide-up delay-2"><div class="stat-accent"></div><div class="stat-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></div><div class="stat-label-new">Resign</div><div class="stat-num-new" id="st-resign" data-val="0">0</div><div class="stat-sub-new">Bulan ini</div></div>
+    <div class="stat-card-new kpi-3 anim-slide-up delay-3"><div class="stat-accent"></div><div class="stat-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></div><div class="stat-label-new">Total Kandidat</div><div class="stat-num-new" id="st-kandidat" data-val="0">0</div><div class="stat-sub-new" id="st-kandidat-sub"></div></div>
+    <div class="stat-card-new kpi-4 anim-slide-up delay-4"><div class="stat-accent"></div><div class="stat-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="stat-label-new">Bergabung</div><div class="stat-num-new" id="st-join" data-val="0">0</div><div class="stat-sub-new">Dari rekrutmen</div></div>
+    <div class="stat-card-new kpi-5 anim-slide-up delay-5"><div class="stat-accent"></div><div class="stat-card-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="stat-label-new">Surat Peringatan</div><div class="stat-num-new" id="st-sp" data-val="0">0</div><div class="stat-sub-new">Semua periode</div></div>
+  </div>
+  <div class="grid-2 mb-24" style="align-items:stretch">
+    <div class="card reveal delay-r1" style="display:flex;flex-direction:column;min-height:220px"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Status Karyawan</div></div><div class="donut-wrap" style="flex:1;align-items:center;justify-content:center"><svg width="120" height="120" viewBox="0 0 100 100" id="donut-svg"><circle cx="50" cy="50" r="38" fill="none" stroke="rgba(141,30,24,0.10)" stroke-width="14"/></svg><div class="donut-legend" id="donut-legend"></div></div></div>
+    <div class="card reveal delay-r2" style="display:flex;flex-direction:column;min-height:220px"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Kandidat per Posisi</div></div><div class="bar-chart-wrap" style="flex:1;min-height:140px"><div class="bar-chart" id="posisi-chart"></div></div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap" id="posisi-legend"></div></div>
+  </div>
+  <div class="grid-2 mb-24">
+    <div class="card reveal delay-r1"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Rekrutmen Terbaru</div></div><div id="rek-recent"></div></div>
+    <div class="card reveal delay-r2"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Kontrak Segera Berakhir</div></div><div id="kontrak-expiry"></div></div>
+  </div>
+  <div class="card mb-24 reveal delay-r1">
+  <div class="card-title">
+    <div class="card-title-left"><div class="card-dot"></div> Absensi Highlight</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <select id="att-filter-bulan" style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid rgba(141,30,24,0.2);background:var(--surface);color:var(--text-main);cursor:pointer;outline:none">
+        <option value="">Semua Bulan</option>
+      </select>
+      <select id="att-filter-rows" style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid rgba(141,30,24,0.2);background:var(--surface);color:var(--text-main);cursor:pointer;outline:none">
+        <option value="10">10 baris</option>
+        <option value="25">25 baris</option>
+        <option value="50">50 baris</option>
+        <option value="0">Semua</option>
+      </select>
     </div>
   </div>
+  <div class="table-wrap"><table id="att-dash-table"></table></div>
+</div>
+</div>
 
-  <!-- ═══ REKRUTMEN ═══ -->
-  <div class="page" id="page-rekrutmen">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Pipeline Kandidat</div>
-        <div class="section-sub">Tracking proses rekrutmen end-to-end</div>
-      </div>
-      <button class="btn btn-secondary" onclick="openAddRekModal()">+ Tambah Kandidat</button>
-    </div>
-
-    <div class="tabs">
-      <div class="tab active" onclick="switchRekTab('pipeline', this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="8" rx="1"/></svg> Pipeline View</div>
-      <div class="tab" onclick="switchRekTab('table', this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg> Tabel Lengkap</div>
-    </div>
-
-    <div class="tab-panel active" id="rek-pipeline">
-      <div class="pipeline" id="pipeline-board"></div>
-    </div>
-
-    <div class="tab-panel" id="rek-table">
-      <div class="card">
-        <div class="toolbar">
-          <input class="search-input" type="text" placeholder="Cari nama kandidat..." oninput="filterRek(this.value)">
-          <select class="select-filter" onchange="filterRekPos(this.value)">
-            <option value="">Semua Posisi</option>
-          </select>
-        </div>
-        <div class="table-wrap">
-          <table id="rek-table-el">
-            <thead><tr>
-              <th>#</th><th>Nama</th><th>Posisi</th><th>Applied</th>
-              <th>Lokasi</th><th>Status Tahap</th><th>Screening</th>
-              <th>Int. HR</th><th>TTD Kontrak</th><th>Join</th>
-            </tr></thead>
-            <tbody id="rek-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+<!-- ═══ JOB OPENINGS / ATS ═══ -->
+<div class="page" id="page-job-openings">
+  <div class="section-header">
+    <div><div class="section-title">Posisi & ATS</div><div class="section-sub">Kelola posisi kosong dan profil skill kandidat</div></div>
+    <button class="btn btn-action" data-requires-write onclick="openJobModal(null)">+ Buka Posisi</button>
   </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchJobTab('board',this)">Posisi Tersedia</div>
+    <div class="tab" onclick="switchJobTab('profiles',this)">Profil Kandidat</div>
+  </div>
+  <div class="tab-panel active" id="job-tab-board"><div id="job-board"></div></div>
+  <div class="tab-panel" id="job-tab-profiles"><div id="candidate-profiles"></div></div>
+</div>
 
-  <!-- ═══ KARYAWAN ═══ -->
-  <div class="page" id="page-karyawan">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Data Karyawan</div>
-        <div class="section-sub">Manajemen karyawan aktif &amp; resign</div>
-      </div>
-      <button class="btn btn-secondary">+ Tambah Karyawan</button>
-    </div>
-
-    <div class="tabs">
-      <div class="tab active" onclick="switchEmpTab('cards', this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Kartu View</div>
-      <div class="tab" onclick="switchEmpTab('table', this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="9" x2="9" y2="21"/></svg> Tabel Lengkap</div>
-    </div>
-
-    <div class="tab-panel active" id="emp-cards">
+<!-- ═══ REKRUTMEN ═══ -->
+<div class="page" id="page-rekrutmen">
+  <div class="section-header">
+    <div><div class="section-title">Pipeline Kandidat</div><div class="section-sub">Tracking proses rekrutmen end-to-end</div></div>
+    <button class="btn btn-action" data-requires-write onclick="openAddRekModal()">+ Tambah Kandidat</button>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchRekTab('pipeline',this)">Pipeline View</div>
+    <div class="tab" onclick="switchRekTab('table',this)">Tabel Lengkap</div>
+  </div>
+  <div class="tab-panel active" id="rek-pipeline"><div id="pipeline-board" style="width:100%"></div></div>
+  <div class="tab-panel" id="rek-table">
+    <div class="card">
       <div class="toolbar">
-        <input class="search-input" type="text" placeholder="Cari karyawan..." oninput="filterEmp(this.value)">
-        <select class="select-filter" onchange="filterEmpStatus(this.value)">
-          <option value="">Semua Status</option>
-          <option>Aktif</option><option>Resign</option>
-        </select>
-        <select class="select-filter" onchange="filterEmpOrg(this.value)" id="filter-org">
-          <option value="">Semua Divisi</option>
+        <input class="search-input" type="text" placeholder="Cari nama kandidat..." oninput="filterRek(this.value)">
+        <select class="select-filter" id="rek-filter-posisi" onchange="filterRekPos(this.value)">
+          <option value="">Semua Posisi</option>
         </select>
       </div>
-      <div class="emp-grid" id="emp-card-grid"></div>
-    </div>
-
-    <div class="tab-panel" id="emp-table">
-      <div class="card">
-        <div class="toolbar">
-          <input class="search-input" type="text" placeholder="Cari karyawan...">
-        </div>
-        <div class="table-wrap">
-          <table id="emp-table-el">
-            <thead><tr>
-              <th>ID</th><th>Nama</th><th>Divisi</th><th>Jabatan</th>
-              <th>Branch</th><th>Status</th><th>Kont.</th>
-              <th>Join</th><th>Kontrak s/d</th>
-            </tr></thead>
-            <tbody id="emp-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══ ABSENSI ═══ -->
-  <div class="page" id="page-absensi">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Data Absensi</div>
-        <div class="section-sub">Rekap kehadiran karyawan — Oktober 2025</div>
-      </div>
-      <span class="badge badge-yellow">Okt 2025</span>
-    </div>
-
-    <div class="stats-grid" id="att-stats"></div>
-    <div class="info-box warning" id="att-warning"></div>
-
-    <div class="card">
-      <div class="card-title">
-        <div class="card-title-left"><div class="card-dot"></div> Rekap Absensi Lengkap</div>
-      </div>
       <div class="table-wrap">
-        <table id="att-table-el">
-          <thead><tr>
-            <th>#</th><th>ID</th><th>Nama</th><th>Branch</th>
-            <th>Hadir</th><th>Terlambat</th><th>Cuti</th>
-            <th>Sakit</th><th>Izin</th><th>Alpha</th>
-            <th>Kehadiran %</th>
-          </tr></thead>
-          <tbody id="att-tbody"></tbody>
+        <table id="rek-table-el">
+          <thead><tr><th>#</th><th>Nama</th><th>Posisi</th><th>Applied</th><th>Lokasi</th><th>Tahap Saat Ini</th><th>Aksi</th></tr></thead>
+          <tbody id="rek-tbody"></tbody>
         </table>
       </div>
+      <div id="rek-table-pagination"></div>
     </div>
   </div>
+</div>
 
-  <!-- ═══ SP ═══ -->
-  <div class="page" id="page-sp">
-    <div class="section-header">
-      <div>
-        <div class="section-title">Surat Peringatan</div>
-        <div class="section-sub">Riwayat SP karyawan — semua periode</div>
-      </div>
+<!-- ═══ KARYAWAN ═══ -->
+<div class="page" id="page-karyawan">
+  <div class="section-header">
+    <div><div class="section-title">Data Karyawan</div><div class="section-sub">Manajemen karyawan aktif &amp; resign</div></div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchEmpTab('cards',this)">Kartu View</div>
+    <div class="tab" onclick="switchEmpTab('table',this)">Tabel Lengkap</div>
+  </div>
+  <div class="tab-panel active" id="emp-cards">
+    <div class="toolbar">
+      <input class="search-input" type="text" placeholder="Cari karyawan..." oninput="filterEmp(this.value)">
+      <select class="select-filter" onchange="filterEmpStatus(this.value)"><option value="">Semua Status</option><option>Aktif</option><option>Resign</option></select>
+      <select class="select-filter" onchange="filterEmpOrg(this.value)" id="filter-org"><option value="">Semua Divisi</option></select>
     </div>
-
-    <div class="stats-grid" id="sp-stats"></div>
-
-    <div class="tabs">
-      <div class="tab active" onclick="switchSpTab('all', this)">Semua</div>
-      <div class="tab" onclick="switchSpTab('okt', this)">Okt 2025</div>
-      <div class="tab" onclick="switchSpTab('nov', this)">Nov 2025</div>
-    </div>
-
+    <div class="emp-grid" id="emp-card-grid"></div>
+  </div>
+  <div class="tab-panel" id="emp-table">
     <div class="card">
-      <div class="card-title">
-        <div class="card-title-left"><div class="card-dot"></div> Daftar Surat Peringatan</div>
-      </div>
-      <div id="sp-list"></div>
-    </div>
-
-    <div class="card" style="margin-top:16px">
-      <div class="card-title">
-        <div class="card-title-left"><div class="card-dot"></div> Tabel Lengkap SP</div>
+      <div class="toolbar">
+        <input class="search-input" type="text" placeholder="Cari nama / ID karyawan..." oninput="filterEmp(this.value)">
+        <select class="select-filter" onchange="filterEmpStatus(this.value)"><option value="">Semua Status</option><option>Aktif</option><option>Resign</option></select>
+        <select class="select-filter" onchange="filterEmpOrg(this.value)" id="filter-org-table"><option value="">Semua Divisi</option></select>
       </div>
       <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th>#</th><th>ID</th><th>Nama</th><th>Jabatan</th>
-            <th>Level</th><th>Jenis SP</th><th>Bulan</th>
-          </tr></thead>
-          <tbody id="sp-tbody"></tbody>
+        <table id="emp-table-el">
+          <thead><tr><th>ID</th><th>Nama</th><th>Divisi</th><th>Jabatan</th><th>Branch</th><th>Status</th><th>Kont.</th><th>Join</th><th>s/d</th><th data-requires-write>Aksi</th></tr></thead>
+          <tbody id="emp-tbody"></tbody>
         </table>
       </div>
+      <div id="emp-table-pagination"></div>
     </div>
   </div>
+</div>
+
+<!-- ═══ ABSENSI ═══ -->
+<div class="page" id="page-absensi">
+  <div class="section-header">
+    <div><div class="section-title">Data Absensi</div><div class="section-sub">Rekap kehadiran karyawan — semua periode</div></div>
+    <select class="select-filter" id="att-bulan-sel" style="min-width:160px"><option value="">-- Semua Bulan --</option></select>
+  </div>
+  <div class="stats-grid" id="att-stats"></div>
+  <div class="info-box warning" id="att-warning" style="display:none"></div>
+  <div class="card">
+    <div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Rekap Absensi Lengkap</div></div>
+    <div class="table-wrap">
+      <table id="att-table-el">
+        <thead><tr><th>#</th><th>ID</th><th>Nama</th><th>Branch</th><th>Hadir</th><th>Terlambat</th><th>Cuti</th><th>Sakit</th><th>Izin</th><th>Alpha</th><th>Kehadiran %</th></tr></thead>
+        <tbody id="att-tbody"></tbody>
+      </table>
+    </div>
+    <div id="att-pagination"></div>
+  </div>
+</div>
+
+<!-- ═══ SP ═══ -->
+<div class="page" id="page-sp">
+  <div class="section-header">
+    <div><div class="section-title">Surat Peringatan</div><div class="section-sub">Riwayat SP karyawan — semua periode</div></div>
+    <button class="btn btn-action" data-requires-write onclick="openAddSPModal()">+ Tambah SP</button>
+  </div>
+  <div class="stats-grid" id="sp-stats"></div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchSpTab('all',this)">Semua</div>
+    <div class="tab" onclick="switchSpTab('okt',this)">Okt 2025</div>
+    <div class="tab" onclick="switchSpTab('nov',this)">Nov 2025</div>
+  </div>
+  <div class="card mb-20"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Daftar SP</div></div><div id="sp-list"></div></div>
+  <div class="card"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Tabel Lengkap SP</div></div>
+    <div class="toolbar">
+      <input class="search-input" type="text" placeholder="Cari nama karyawan..." oninput="window._spSearch(this.value)" style="flex:1">
+      <select class="select-filter" onchange="window._spFilterJenis(this.value)"><option value="">Semua Jenis</option><option>SP 1</option><option>SP 2</option><option>SP 3</option></select>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>#</th><th>ID</th><th>Nama</th><th>Jabatan</th><th>Level</th><th>Jenis SP</th><th>Bulan</th><th data-requires-write>Aksi</th></tr></thead><tbody id="sp-tbody"></tbody></table></div>
+    <div id="sp-table-pagination"></div>
+  </div>
+</div>
+
+<!-- ═══ PAYROLL ═══ -->
+<div class="page" id="page-payroll">
+  <div class="section-header">
+    <div><div class="section-title">Penggajian</div><div class="section-sub">Kalkulasi dan rekap gaji karyawan</div></div>
+    <div style="display:flex;gap:8px">
+      <select class="select-filter" id="payroll-bulan-sel" style="min-width:160px"><option value="">-- Pilih Bulan --</option></select>
+      <button class="btn btn-ghost" onclick="exportPayrollExcel()">Export CSV</button>
+      <button class="btn btn-action" data-requires-write onclick="openInputGajiModal()">+ Input Gaji</button>
+    </div>
+  </div>
+  <div class="stats-grid" id="pay-stats"></div>
+  <div class="card" style="margin-top:20px">
+    <div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Rekap Penggajian</div></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Karyawan</th><th>Gaji Pokok</th><th>Tunjangan</th><th>Potongan</th><th>Gaji Bersih</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody id="pay-tbody"><tr><td colspan="8" style="text-align:center;color:#8c6c64;padding:28px">Pilih bulan untuk melihat data penggajian.</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══ RIWAYAT MUTASI/PROMOSI (#6) ═══ -->
+<div class="page" id="page-riwayat">
+  <div class="section-header">
+    <div><div class="section-title">Riwayat Karyawan</div><div class="section-sub">Mutasi, promosi, dan perubahan status</div></div>
+    <button class="btn btn-action" data-requires-write onclick="openAddRiwayat()">+ Catat Perubahan</button>
+  </div>
+  <div class="card">
+    <div class="toolbar">
+      <select class="select-filter" id="riwayat-emp-filter" onchange="filterRiwayatEmp(this.value)" style="min-width:200px">
+        <option value="">-- Semua Karyawan --</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Karyawan</th><th>Tanggal</th><th>Jenis</th><th>Jabatan</th><th>Departemen</th><th>Keterangan</th><th>Aksi</th></tr></thead>
+        <tbody id="riwayat-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CUTI (#7) ═══ -->
+<div class="page" id="page-cuti">
+  <div class="section-header">
+    <div><div class="section-title">Manajemen Cuti</div><div class="section-sub">Saldo & pengajuan cuti karyawan</div></div>
+    <div style="display:flex;gap:8px">
+      <select class="select-filter" id="cuti-tahun-sel" style="min-width:90px"></select>
+      <button class="btn btn-ghost" data-requires-write onclick="openSetSaldo()">Set Saldo</button>
+      <button class="btn btn-action" data-requires-write onclick="openAjukanCuti()">+ Ajukan Cuti</button>
+    </div>
+  </div>
+  <div class="stats-grid" id="cuti-stats"></div>
+  <div class="tabs" style="margin-top:20px">
+    <div class="tab active" onclick="switchCutiTab('saldo',this)">Saldo Cuti</div>
+    <div class="tab" onclick="switchCutiTab('pengajuan',this)">Pengajuan</div>
+  </div>
+  <div class="tab-panel active" id="cuti-tab-saldo">
+    <div class="card"><div class="table-wrap">
+      <table><thead><tr><th>#</th><th>Karyawan</th><th>Jatah (hari)</th><th>Terpakai</th><th>Sisa</th><th>Progres</th></tr></thead>
+      <tbody id="cuti-saldo-tbody"></tbody></table>
+    </div></div>
+  </div>
+  <div class="tab-panel" id="cuti-tab-pengajuan">
+    <div class="card"><div class="table-wrap">
+      <table><thead><tr><th>#</th><th>Karyawan</th><th>Jenis</th><th>Mulai</th><th>Selesai</th><th>Hari</th><th>Status</th><th>Aksi</th></tr></thead>
+      <tbody id="cuti-pengajuan-tbody"></tbody></table>
+    </div></div>
+  </div>
+</div>
+
+<!-- ═══ ANALYTICS (#8) ═══ -->
+<div class="page" id="page-analytics">
+  <div class="section-header">
+    <div><div class="section-title">Analitik SDM</div><div class="section-sub">Visualisasi data karyawan, rekrutmen, dan kehadiran</div></div>
+  </div>
+  <div id="analytics-error" style="display:none;color:#8d1e18;padding:12px;background:rgba(141,30,24,.08);border-radius:10px;margin-bottom:16px"></div>
+  <div class="stats-grid" id="analytics-kpi"></div>
+  <div class="grid-2 mb-24" style="margin-top:20px">
+    <div class="card"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Tren Rekrutmen per Bulan</div></div>
+      <div style="position:relative;height:220px"><canvas id="chart-rekrutmen-tren"></canvas></div></div>
+    <div class="card"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Distribusi Status Karyawan</div></div>
+      <div style="position:relative;height:220px"><canvas id="chart-status-karyawan"></canvas></div></div>
+  </div>
+  <div class="grid-2 mb-24">
+    <div class="card"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Karyawan per Departemen</div></div>
+      <div style="position:relative;height:220px"><canvas id="chart-distribusi-org"></canvas></div></div>
+    <div class="card"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Tren Kehadiran per Bulan</div></div>
+      <div style="position:relative;height:220px"><canvas id="chart-kehadiran"></canvas></div></div>
+  </div>
+  <div class="grid-2 mb-24">
+    <div class="card"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Distribusi Surat Peringatan</div></div>
+      <div style="position:relative;height:200px"><canvas id="chart-sp"></canvas></div></div>
+    <div class="card"><div class="card-title"><div class="card-title-left"><div class="card-dot"></div> Distribusi Predikat KPI</div></div>
+      <div style="position:relative;height:200px"><canvas id="chart-kpi-skor"></canvas></div></div>
+  </div>
+</div>
+
+<!-- ═══ ABSENSI HARIAN (#9) ═══ -->
+<div class="page" id="page-absensi-harian">
+  <div class="section-header">
+    <div><div class="section-title">Absensi Harian</div><div class="section-sub">Input kehadiran per hari & rekap ke bulanan</div></div>
+    <div style="display:flex;gap:8px">
+      <input type="date" class="select-filter" id="daily-tgl-input" style="min-width:150px">
+      <button class="btn btn-ghost" onclick="aggregateToMonthly()">Rekap ke Bulanan</button>
+      <button class="btn btn-action" data-requires-write onclick="openInputHarian()">+ Input Absensi</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Karyawan</th><th>Status</th><th>Jam Masuk</th><th>Jam Keluar</th><th>Terlambat</th><th>Aksi</th></tr></thead>
+        <tbody id="daily-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DOKUMEN (#11) ═══ -->
+<div class="page" id="page-dokumen">
+  <div class="section-header">
+    <div><div class="section-title">Dokumen Karyawan</div><div class="section-sub">Arsip KTP, ijazah, kontrak, dan dokumen lainnya</div></div>
+    <button class="btn btn-action" data-requires-write onclick="openUploadDokumen()">+ Upload Dokumen</button>
+  </div>
+  <div class="card">
+    <div class="toolbar">
+      <select class="select-filter" id="doc-emp-filter" style="min-width:200px">
+        <option value="">-- Semua Karyawan --</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Karyawan</th><th>Jenis</th><th>Nama Dokumen</th><th>Ukuran</th><th>Aksi</th></tr></thead>
+        <tbody id="doc-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ OFFBOARDING (#12) ═══ -->
+<div class="page" id="page-offboarding">
+  <div class="section-header">
+    <div><div class="section-title">Offboarding</div><div class="section-sub">Checklist serah terima & proses resign karyawan</div></div>
+    <button class="btn btn-action" data-requires-write onclick="openOffboardModal()">+ Mulai Offboarding</button>
+  </div>
+  <!-- Stats ringkasan -->
+  <div class="stats-grid" id="offboard-stats" style="margin-bottom:20px"></div>
+  <!-- Filter bar -->
+  <div class="card" style="margin-bottom:16px;padding:14px 18px">
+    <div class="toolbar" style="margin:0">
+      <input class="search-input" type="text" placeholder="Cari nama karyawan..." oninput="window.filterOffboard(this.value)">
+      <select class="select-filter" onchange="window.filterOffboardStatus(this.value)">
+        <option value="">Semua Status</option>
+        <option value="Proses">Proses</option>
+        <option value="Selesai">Selesai</option>
+      </select>
+    </div>
+  </div>
+  <div id="offboard-list"></div>
+</div>
+
+<!-- ═══ KPI (#13) ═══ -->
+<div class="page" id="page-kpi">
+  <div class="section-header">
+    <div><div class="section-title">Penilaian Kinerja (KPI)</div><div class="section-sub">Skor kinerja per karyawan per periode</div></div>
+    <button class="btn btn-action" data-requires-write onclick="openAddKpi()">+ Tambah Penilaian</button>
+  </div>
+  <div class="stats-grid" id="kpi-stats"></div>
+  <div class="card" style="margin-top:20px">
+    <div class="toolbar">
+      <select class="select-filter" id="kpi-emp-filter" style="min-width:200px">
+        <option value="">-- Semua Karyawan --</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Karyawan</th><th>Periode</th><th>Tipe</th><th>Kualitas</th><th>Kuantitas</th><th>Kehadiran</th><th>Sikap</th><th>Inisiatif</th><th>Total</th><th>Predikat</th><th>Aksi</th></tr></thead>
+        <tbody id="kpi-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ LEMBUR (Overtime) ═══ -->
+<div class="page" id="page-overtime">
+  <div class="section-header">
+    <div><div class="section-title">Lembur</div><div class="section-sub">Pencatatan & persetujuan lembur karyawan</div></div>
+    <button class="btn btn-action" onclick="window.openOvertimeModal()">+ Tambah Lembur</button>
+  </div>
+  <div class="stats-grid" id="overtime-stats"></div>
+  <div class="card" style="margin-top:20px">
+    <div class="toolbar">
+      <input class="search-input" type="text" placeholder="Cari nama karyawan..." oninput="window.filterOvertime(this.value)" style="flex:1">
+      <select class="select-filter" onchange="window.filterOvertimeStatus(this.value)">
+        <option value="">Semua Status</option><option>Pending</option><option>Disetujui</option><option>Ditolak</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Karyawan</th><th>Tanggal</th><th>Mulai</th><th>Selesai</th><th>Durasi</th><th>Jenis</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody id="overtime-tbody"><tr><td colspan="9" style="text-align:center;color:#8c6c64;padding:28px">Klik "+ Tambah Lembur" untuk mulai mencatat.</td></tr></tbody>
+      </table>
+    </div>
+    <div id="overtime-pagination"></div>
+  </div>
+</div>
+
+<!-- ═══ TRAINING & PENGEMBANGAN ═══ -->
+<div class="page" id="page-training">
+  <div class="section-header">
+    <div><div class="section-title">Training & Pengembangan</div><div class="section-sub">Rencana & riwayat pelatihan karyawan</div></div>
+    <button class="btn btn-action" onclick="window.openTrainingModal()">+ Tambah Training</button>
+  </div>
+  <div class="stats-grid" id="training-stats"></div>
+  <div class="card" style="margin-top:20px">
+    <div class="toolbar">
+      <input class="search-input" type="text" placeholder="Cari nama / training..." oninput="window.filterTraining(this.value)" style="flex:1">
+      <select class="select-filter" onchange="window.filterTrainingStatus(this.value)">
+        <option value="">Semua Status</option><option>Direncanakan</option><option>Berlangsung</option><option>Selesai</option><option>Batal</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Karyawan</th><th>Nama Training</th><th>Jenis</th><th>Penyelenggara</th><th>Tanggal</th><th>Biaya</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody id="training-tbody"><tr><td colspan="9" style="text-align:center;color:#8c6c64;padding:28px">Klik "+ Tambah Training" untuk mulai mencatat.</td></tr></tbody>
+      </table>
+    </div>
+    <div id="training-pagination"></div>
+  </div>
+</div>
+
+<!-- ═══ KELOLA USER (#10) ═══ -->
+<div class="page" id="page-users">
+  <div class="section-header">
+    <div><div class="section-title">Kelola User HR</div><div class="section-sub">Manajemen akun dan role tim HR</div></div>
+  </div>
+  <div class="info-box warning" style="margin-bottom:16px">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <div>Hanya admin yang dapat mengubah role dan status akun. Perubahan langsung berlaku.</div>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Nama</th><th>Email</th><th>Role</th><th>Status</th><th>Aksi</th></tr></thead>
+        <tbody id="user-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
 </main>
 
-<!-- ADD KANDIDAT MODAL -->
+<!-- ══ MODALS ══════════════════════════════════════════════ -->
+
+<!-- Modal Tambah Kandidat -->
 <div class="modal-backdrop" id="modal-rek">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">+ Tambah Kandidat Baru</div>
-      <button class="modal-close" onclick="closeModal('modal-rek')" style="font-size:16px;line-height:1">×</button>
-    </div>
-    <div class="form-row">
-      <label class="form-label">Nama Lengkap</label>
-      <input class="form-input" id="f-nama" placeholder="Nama kandidat">
-    </div>
-    <div class="form-row">
-      <label class="form-label">Posisi yang Dilamar</label>
-      <input class="form-input" id="f-posisi" placeholder="e.g. Staff Frontliner">
-    </div>
-    <div class="form-row">
-      <label class="form-label">Alamat Domisili</label>
-      <input class="form-input" id="f-alamat" placeholder="Alamat lengkap">
+  <div class="modal" style="max-width:540px">
+    <div class="modal-header"><div class="modal-title">+ Tambah Kandidat</div><button class="modal-close" onclick="closeModal('modal-rek')">×</button></div>
+    <div class="form-row"><label class="form-label">Nama Lengkap</label><input class="form-input" id="f-nama" placeholder="Nama kandidat"></div>
+    <div class="form-row"><label class="form-label">Posisi Dilamar</label>
+      <select class="form-input" id="f-posisi-sel"><option value="">-- Pilih Posisi --</option></select>
     </div>
     <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div>
-        <label class="form-label">Umur</label>
-        <input class="form-input" id="f-umur" type="number" placeholder="22">
-      </div>
-      <div>
-        <label class="form-label">Status Nikah</label>
-        <select class="form-input" id="f-status">
-          <option>Belum Menikah</option>
-          <option>Menikah</option>
-          <option>Cerai</option>
-        </select>
-      </div>
+      <div><label class="form-label">No. Telepon / WA</label><input class="form-input" id="f-telepon" placeholder="08xxxxxxxxxx"></div>
+      <div><label class="form-label">Email</label><input class="form-input" id="f-email" type="email" placeholder="email@..."></div>
+    </div>
+    <div class="form-row"><label class="form-label">Alamat Domisili</label><input class="form-input" id="f-alamat" placeholder="Alamat lengkap"></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div><label class="form-label">Umur</label><input class="form-input" id="f-umur" type="number" placeholder="22"></div>
+      <div><label class="form-label">Gender</label><select class="form-input" id="f-gender"><option>Laki-laki</option><option>Perempuan</option></select></div>
+      <div><label class="form-label">Status Nikah</label><select class="form-input" id="f-status"><option>Belum Menikah</option><option>Menikah</option><option>Cerai</option></select></div>
     </div>
     <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div>
-        <label class="form-label">Pengumpulan Berkas</label>
-        <select class="form-input" id="f-berkas">
-          <option>Online</option>
-          <option>Offline</option>
+      <div><label class="form-label">Sumber Lamaran</label>
+        <select class="form-input" id="f-sumber">
+          <option value="">— Pilih Sumber —</option>
+          <option>LinkedIn</option><option>JobStreet</option><option>Glints</option>
+          <option>Kalibrr</option><option>Indeed</option><option>Karir.com</option>
+          <option>Referral Karyawan</option><option>Walk-in</option>
+          <option>Instagram</option><option>Poster/Spanduk</option><option>Lainnya</option>
         </select>
       </div>
-      <div>
-        <label class="form-label">Tanggal Applied</label>
-        <input class="form-input" id="f-applied" type="date">
-      </div>
+      <div><label class="form-label">Pengumpulan Berkas</label><select class="form-input" id="f-berkas"><option>Online</option><option>Offline</option></select></div>
     </div>
+    <div class="form-row"><label class="form-label">Lokasi</label>
+      <select class="form-input" id="f-lokasi"><option value="Luar Kabupaten Maros">Luar Kabupaten Maros</option><option value="Dalam Kabupaten Maros">Dalam Kabupaten Maros</option></select>
+    </div>
+    <div class="form-row"><label class="form-label">Tanggal Applied</label><input class="form-input" id="f-applied" type="date"></div>
     <div style="display:flex;gap:10px;margin-top:8px">
       <button class="btn btn-secondary" style="flex:1" onclick="saveKandidat()">Simpan</button>
       <button class="btn btn-outline" onclick="closeModal('modal-rek')">Batal</button>
@@ -1360,843 +2316,515 @@
   </div>
 </div>
 
-<!-- Load config -->
+<!-- Modal Edit Kandidat -->
+<div class="modal-backdrop" id="modal-rek-edit">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header"><div class="modal-title">Edit Kandidat</div><button class="modal-close" onclick="closeModal('modal-rek-edit')">×</button></div>
+    <div class="form-row"><label class="form-label">Nama</label><input class="form-input" id="fe-nama"></div>
+    <div class="form-row"><label class="form-label">Posisi</label>
+      <select class="form-input" id="fe-posisi-sel"><option value="">-- Pilih Posisi --</option></select>
+    </div>
+    <div class="form-row"><label class="form-label">Alamat</label><input class="form-input" id="fe-alamat"></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Umur</label><input class="form-input" id="fe-umur" type="number"></div>
+      <div><label class="form-label">Status Nikah</label><select class="form-input" id="fe-status"><option>Belum Menikah</option><option>Menikah</option><option>Cerai</option></select></div>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Berkas</label><select class="form-input" id="fe-berkas"><option>Online</option><option>Offline</option></select></div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:#8c6c64;margin:12px 0 6px;text-transform:uppercase;letter-spacing:.05em">Tanggal per Tahap</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><label class="form-label">Screening CV</label><input class="form-input" id="fe-screening-cv" type="date"></div>
+      <div><label class="form-label">Tes Tertulis</label><input class="form-input" id="fe-tes-tertulis" type="date"></div>
+      <div><label class="form-label">Interview HR</label><input class="form-input" id="fe-interview-hr" type="date"></div>
+      <div><label class="form-label">Interview User</label><input class="form-input" id="fe-interview-user" type="date"></div>
+      <div><label class="form-label">Training</label><input class="form-input" id="fe-training" type="date"></div>
+      <div><label class="form-label">TTD Kontrak</label><input class="form-input" id="fe-ttd-kontrak" type="date"></div>
+      <div><label class="form-label">Join Date</label><input class="form-input" id="fe-join-date" type="date"></div>
+    </div>
+    <!-- New fields: telepon, email, sumber, alasan, skor, interviewer -->
+    <div style="font-size:12px;font-weight:700;color:#8d1e18;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px;padding-top:10px;border-top:1px solid rgba(141,30,24,0.1)">Kontak & Sumber</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><label class="form-label">No. Telepon / WA</label><input class="form-input" id="fe-telepon" placeholder="08xxxxxxxxxx"></div>
+      <div><label class="form-label">Email</label><input class="form-input" id="fe-email" type="email" placeholder="email@..."></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <div><label class="form-label">Gender</label><select class="form-input" id="fe-gender"><option value="">—</option><option>Laki-laki</option><option>Perempuan</option></select></div>
+      <div><label class="form-label">Sumber Lamaran</label>
+        <select class="form-input" id="fe-sumber">
+          <option value="">— Sumber —</option>
+          <option>LinkedIn</option><option>JobStreet</option><option>Glints</option>
+          <option>Kalibrr</option><option>Indeed</option><option>Karir.com</option>
+          <option>Referral Karyawan</option><option>Walk-in</option>
+          <option>Instagram</option><option>Poster/Spanduk</option><option>Lainnya</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <div><label class="form-label">Skor Tes Tertulis (0-100)</label><input class="form-input" id="fe-skor-tes" type="number" min="0" max="100" placeholder="—"></div>
+      <div><label class="form-label">Interviewer</label><input class="form-input" id="fe-interviewer" placeholder="Nama yang interview"></div>
+    </div>
+    <div style="margin-top:8px"><label class="form-label">Alasan Tidak Lanjut (jika ditolak)</label><textarea class="form-input" id="fe-alasan" rows="2" style="resize:vertical" placeholder="Isi jika kandidat tidak dilanjutkan..."></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveEditRek()">Simpan Perubahan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-rek-edit')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit Karyawan -->
+<div class="modal-backdrop" id="modal-emp-edit">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header"><div class="modal-title">Edit Karyawan</div><button class="modal-close" onclick="closeModal('modal-emp-edit')">×</button></div>
+
+    <!-- Tab nav -->
+    <div style="display:flex;gap:4px;background:rgba(141,30,24,0.10);border-radius:10px;padding:4px;margin-bottom:18px">
+      <button onclick="switchEmpModalTab('data',this)" id="ee-tab-data"
+        style="flex:1;padding:7px;border-radius:8px;border:none;background:#8d1e18;color:white;cursor:pointer;font-size:12px;font-weight:700;font-family:Manrope,sans-serif">Data Pekerjaan</button>
+      <button onclick="switchEmpModalTab('kontak',this)" id="ee-tab-kontak"
+        style="flex:1;padding:7px;border-radius:8px;border:none;background:transparent;color:rgba(141,30,24,0.7);cursor:pointer;font-size:12px;font-weight:600;font-family:Manrope,sans-serif">Kontak & Legal</button>
+      <button onclick="switchEmpModalTab('gaji',this)" id="ee-tab-gaji"
+        style="flex:1;padding:7px;border-radius:8px;border:none;background:transparent;color:rgba(141,30,24,0.7);cursor:pointer;font-size:12px;font-weight:600;font-family:Manrope,sans-serif">Gaji & Bank</button>
+    </div>
+
+    <!-- Tab: Data Pekerjaan -->
+    <div id="ee-panel-data">
+      <div class="form-row"><label class="form-label">Nama Lengkap</label><input class="form-input" id="ee-name"></div>
+      <div class="form-row"><label class="form-label">Jabatan</label><input class="form-input" id="ee-position"></div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Divisi / Unit</label><input class="form-input" id="ee-org"></div>
+        <div><label class="form-label">Branch</label><input class="form-input" id="ee-branch"></div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Gender</label><select class="form-input" id="ee-gender"><option>Laki-laki</option><option>Perempuan</option></select></div>
+        <div><label class="form-label">Status</label><select class="form-input" id="ee-status"><option>Aktif</option><option>Resign</option><option>Cuti</option><option>Suspend</option></select></div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Status Kepegawaian</label><select class="form-input" id="ee-emp-status"><option>Contract</option><option>Probation</option><option>Permanent</option><option>Resigned</option></select></div>
+        <div><label class="form-label">Pendidikan Terakhir</label><select class="form-input" id="ee-pendidikan"><option value="">—</option><option>SMA/SMK</option><option>D3</option><option>S1</option><option>S2</option><option>S3</option></select></div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Tanggal Mulai</label><input class="form-input" id="ee-join-date" type="date"></div>
+        <div><label class="form-label">Kontrak s/d</label><input class="form-input" id="ee-end-date" type="date"></div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Tempat Lahir</label><input class="form-input" id="ee-tempat-lahir" placeholder="Makassar"></div>
+        <div><label class="form-label">Tanggal Lahir</label><input class="form-input" id="ee-tgl-lahir" type="date"></div>
+      </div>
+      <div class="form-row"><label class="form-label">Alamat Lengkap</label><textarea class="form-input" id="ee-alamat" rows="2" style="resize:vertical" placeholder="Jl. ..."></textarea></div>
+    </div>
+
+    <!-- Tab: Kontak & Legal -->
+    <div id="ee-panel-kontak" style="display:none">
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">No. Telepon / WA</label><input class="form-input" id="ee-telepon" placeholder="08xxxxxxxxxx"></div>
+        <div><label class="form-label">Email</label><input class="form-input" id="ee-email" type="email" placeholder="nama@email.com"></div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">NIK (No. KTP)</label><input class="form-input" id="ee-nik" placeholder="16 digit"></div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:#8d1e18;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px;padding-top:10px;border-top:1px solid rgba(141,30,24,0.1)">BPJS</div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">No. BPJS Kesehatan</label><input class="form-input" id="ee-bpjs-kes" placeholder="13 digit"></div>
+        <div><label class="form-label">No. BPJS Ketenagakerjaan</label><input class="form-input" id="ee-bpjs-tk" placeholder="11 digit"></div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:#8d1e18;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px;padding-top:10px;border-top:1px solid rgba(141,30,24,0.1)">Kontak Darurat</div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Nama</label><input class="form-input" id="ee-kd-nama" placeholder="Nama keluarga / kerabat"></div>
+        <div><label class="form-label">Hubungan</label><select class="form-input" id="ee-kd-hub"><option value="">—</option><option>Orang Tua</option><option>Pasangan</option><option>Saudara</option><option>Teman</option><option>Lainnya</option></select></div>
+      </div>
+      <div class="form-row"><label class="form-label">No. Telepon Darurat</label><input class="form-input" id="ee-kd-hp" placeholder="08xxxxxxxxxx"></div>
+    </div>
+
+    <!-- Tab: Gaji & Bank -->
+    <div id="ee-panel-gaji" style="display:none">
+      <div style="font-size:12px;font-weight:700;color:#8d1e18;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Komponen Gaji Tetap</div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Gaji Pokok (Rp)</label><input class="form-input" id="ee-gaji-pokok" type="number" value="0" placeholder="0"></div>
+        <div><label class="form-label">Tunjangan Makan</label><input class="form-input" id="ee-tj-makan" type="number" value="0"></div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Tunjangan Transport</label><input class="form-input" id="ee-tj-transport" type="number" value="0"></div>
+        <div><label class="form-label">Tunjangan Tetap Lain</label><input class="form-input" id="ee-tj-lain" type="number" value="0"></div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:#8d1e18;text-transform:uppercase;letter-spacing:.05em;margin:14px 0 8px;padding-top:10px;border-top:1px solid rgba(141,30,24,0.1)">Rekening Bank</div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Nama Bank</label><select class="form-input" id="ee-nama-bank"><option value="">—</option><option>BCA</option><option>BNI</option><option>BRI</option><option>BSI / Bank Syariah Indonesia</option><option>BTN</option><option>CIMB Niaga</option><option>Danamon</option><option>Mandiri</option><option>Maybank</option><option>Permata Bank</option><option>Bank Sulselbar</option><option>Bank Mega</option><option>Lainnya</option></select></div>
+        <div><label class="form-label">Atas Nama Rekening</label><input class="form-input" id="ee-atas-nama" placeholder="Nama sesuai buku tabungan"></div>
+      </div>
+      <div class="form-row"><label class="form-label">No. Rekening</label><input class="form-input" id="ee-no-rek" placeholder="Nomor rekening" type="number"></div>
+      <div style="background:rgba(250,212,66,0.15);border-radius:10px;padding:10px 12px;font-size:11px;color:#7a5200;margin-top:4px">
+        ⚠️ Data rekening digunakan untuk proses transfer gaji. Pastikan data sudah benar sebelum disimpan.
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveEditEmp()">Simpan Perubahan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-emp-edit')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tambah SP -->
+<div class="modal-backdrop" id="modal-sp">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">+ Tambah Surat Peringatan</div><button class="modal-close" onclick="closeModal('modal-sp')">×</button></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">ID Karyawan</label><input class="form-input" id="sp-emp-id" placeholder="KUG001"></div>
+      <div><label class="form-label">Nama</label><input class="form-input" id="sp-name"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Jabatan</label><input class="form-input" id="sp-position"></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div><label class="form-label">Jenis SP</label><select class="form-input" id="sp-jenis"><option>SP 1</option><option>SP 2</option><option>SP 3</option></select></div>
+      <div><label class="form-label">Level</label><select class="form-input" id="sp-level"><option>Staff</option><option>Management</option></select></div>
+      <div><label class="form-label">Gender</label><select class="form-input" id="sp-gender"><option>Laki-laki</option><option>Perempuan</option></select></div>
+    </div>
+    <div class="form-row"><label class="form-label">Bulan (e.g. Okt (2025))</label><input class="form-input" id="sp-bulan" placeholder="Okt (2025)"></div>
+    <div class="form-row"><label class="form-label">Keterangan Pelanggaran</label><textarea class="form-input" id="sp-keterangan" rows="3" style="resize:vertical"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveAddSP()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-sp')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Input Gaji -->
+<div class="modal-backdrop" id="modal-payroll">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header"><div class="modal-title">+ Input Gaji Karyawan</div><button class="modal-close" onclick="closeModal('modal-payroll')">×</button></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Karyawan</label><select class="form-input" id="pay-emp-sel"><option value="">-- Pilih --</option></select></div>
+      <div><label class="form-label">Bulan (e.g. Nov (2025))</label><input class="form-input" id="pay-bulan-input" placeholder="Nov (2025)"></div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:#2d6a4f;margin:12px 0 6px;text-transform:uppercase;letter-spacing:.05em">Pendapatan</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><label class="form-label">Gaji Pokok</label><input class="form-input" id="pay-gaji-pokok" type="number" value="0"></div>
+      <div><label class="form-label">Tunjangan Makan</label><input class="form-input" id="pay-tj-makan" type="number" value="0"></div>
+      <div><label class="form-label">Tunjangan Transport</label><input class="form-input" id="pay-tj-transport" type="number" value="0"></div>
+      <div><label class="form-label">Tunjangan Lain</label><input class="form-input" id="pay-tj-lain" type="number" value="0"></div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:#8d1e18;margin:12px 0 6px;text-transform:uppercase;letter-spacing:.05em">Potongan</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><label class="form-label">BPJS Kesehatan (1%)</label><input class="form-input" id="pay-pot-bpjs-kes" type="number" value="0"></div>
+      <div><label class="form-label">BPJS TK (2%)</label><input class="form-input" id="pay-pot-bpjs-tk" type="number" value="0"></div>
+      <div><label class="form-label">Potongan Alpha</label><input class="form-input" id="pay-pot-alpha" type="number" value="0"></div>
+      <div><label class="form-label">Potongan Telat</label><input class="form-input" id="pay-pot-telat" type="number" value="0"></div>
+      <div><label class="form-label">Potongan Lain</label><input class="form-input" id="pay-pot-lain" type="number" value="0"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:14px">
+      <button class="btn btn-secondary" style="flex:1" onclick="savePayroll()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-payroll')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Buka Posisi -->
+<div class="modal-backdrop" id="modal-job">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header"><div class="modal-title">Buka Posisi</div><button class="modal-close" onclick="closeModal('modal-job')">×</button></div>
+    <div class="form-row"><label class="form-label">Nama Posisi</label>
+      <select class="form-input" id="jf-title"><option value="">-- Pilih Posisi --</option></select>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Departemen</label><input class="form-input" id="jf-dept"></div>
+      <div><label class="form-label">Branch</label><input class="form-input" id="jf-branch"></div>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div><label class="form-label">Kebutuhan (orang)</label><input class="form-input" id="jf-headcount" type="number" value="1"></div>
+      <div><label class="form-label">Gaji Min</label><input class="form-input" id="jf-gaji-min" type="number" value="0"></div>
+      <div><label class="form-label">Gaji Max</label><input class="form-input" id="jf-gaji-max" type="number" value="0"></div>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Min. Pengalaman (thn)</label><input class="form-input" id="jf-min-exp" type="number" value="0"></div>
+      <div><label class="form-label">Min. Pendidikan</label><select class="form-input" id="jf-min-edu"><option value="">Tidak ada syarat</option><option>SMA/SMK</option><option>D3</option><option>S1</option><option>S2</option></select></div>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Deadline</label><input class="form-input" id="jf-deadline" type="date"></div>
+      <div><label class="form-label">Status</label><select class="form-input" id="jf-status"><option value="open">Open</option><option value="closed">Closed</option><option value="filled">Filled</option></select></div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Skill yang Dibutuhkan</label>
+      <div id="jf-skills-list"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Keterangan</label><textarea class="form-input" id="jf-keterangan" rows="2" style="resize:vertical"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveJob()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-job')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Profil Kandidat -->
+<div class="modal-backdrop" id="modal-kandidat-profil">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header">
+      <div><div class="modal-title" id="kp-nama">Profil Kandidat</div><div style="font-size:12px;color:#8c6c64;margin-top:2px" id="kp-posisi"></div></div>
+      <button class="modal-close" onclick="closeModal('modal-kandidat-profil')">×</button>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Pendidikan</label><select class="form-input" id="kp-pendidikan"><option value="">--</option><option>SMA/SMK</option><option>D3</option><option>S1</option><option>S2</option></select></div>
+      <div><label class="form-label">Jurusan</label><input class="form-input" id="kp-jurusan" placeholder="e.g. Manajemen"></div>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Pengalaman (tahun)</label><input class="form-input" id="kp-exp-thn" type="number" value="0"></div>
+      <div><label class="form-label">Deskripsi Pengalaman</label><input class="form-input" id="kp-exp-desc" placeholder="e.g. 3 thn di retail"></div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Skill Kandidat</label>
+      <div id="kp-skills-list"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Catatan HR</label><textarea class="form-input" id="kp-catatan" rows="2" style="resize:vertical" placeholder="Catatan setelah interview..."></textarea></div>
+    <div class="form-row"><label class="form-label">Link CV / Dokumen</label><input class="form-input" id="kp-cv-url" placeholder="https://drive.google.com/..."></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveKandidatProfile()">Simpan Profil</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-kandidat-profil')">Batal</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Catat Riwayat (#6) -->
+<div class="modal-backdrop" id="modal-riwayat">
+  <div class="modal" style="max-width:540px">
+    <div class="modal-header"><div class="modal-title">Catat Perubahan Karyawan</div><button class="modal-close" onclick="closeModal('modal-riwayat')">×</button></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Karyawan</label><select class="form-input" id="rh-emp-sel"></select></div>
+      <div><label class="form-label">Tanggal</label><input class="form-input" id="rh-tgl" type="date"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Jenis Perubahan</label>
+      <select class="form-input" id="rh-jenis"><option>Promosi</option><option>Mutasi</option><option>Demosi</option><option>Status</option><option>Kontrak</option><option>Lainnya</option></select>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Jabatan Lama</label><input class="form-input" id="rh-jab-lama"></div>
+      <div><label class="form-label">Jabatan Baru</label><input class="form-input" id="rh-jab-baru"></div>
+      <div><label class="form-label">Dept Lama</label><input class="form-input" id="rh-dept-lama"></div>
+      <div><label class="form-label">Dept Baru</label><input class="form-input" id="rh-dept-baru"></div>
+      <div><label class="form-label">Status Lama</label><input class="form-input" id="rh-st-lama"></div>
+      <div><label class="form-label">Status Baru</label><input class="form-input" id="rh-st-baru"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Keterangan</label><textarea class="form-input" id="rh-keterangan" rows="2" style="resize:vertical"></textarea></div>
+    <div class="form-row"><label class="form-label">Dicatat oleh</label><input class="form-input" id="rh-pencatat"></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveHistory()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-riwayat')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Set Saldo Cuti (#7) -->
+<div class="modal-backdrop" id="modal-cuti-saldo">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Set Saldo Cuti</div><button class="modal-close" onclick="closeModal('modal-cuti-saldo')">×</button></div>
+    <div class="form-row"><label class="form-label">Karyawan</label>
+      <select class="form-input" id="cs-emp-sel"><option value="">-- Pilih --</option></select>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Jatah Cuti (hari)</label><input class="form-input" id="cs-jatah" type="number" value="12"></div>
+      <div><label class="form-label">Sudah Terpakai</label><input class="form-input" id="cs-terpakai" type="number" value="0"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveCutiSaldo()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-cuti-saldo')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ajukan Cuti (#7) -->
+<div class="modal-backdrop" id="modal-cuti-pengajuan">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">+ Ajukan Cuti</div><button class="modal-close" onclick="closeModal('modal-cuti-pengajuan')">×</button></div>
+    <div class="form-row"><label class="form-label">Karyawan</label><select class="form-input" id="ct-emp-sel"></select></div>
+    <div class="form-row"><label class="form-label">Jenis Cuti</label>
+      <select class="form-input" id="ct-jenis"><option>Tahunan</option><option>Sakit</option><option>Melahirkan</option><option>Darurat</option><option>Lainnya</option></select>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Tanggal Mulai</label><input class="form-input" id="ct-tgl-mulai" type="date"></div>
+      <div><label class="form-label">Tanggal Selesai</label><input class="form-input" id="ct-tgl-selesai" type="date"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Alasan</label><textarea class="form-input" id="ct-alasan" rows="2" style="resize:vertical"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveCutiPengajuan()">Ajukan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-cuti-pengajuan')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Input Absensi Harian (#9) -->
+<div class="modal-backdrop" id="modal-daily-abs">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Input Absensi Harian</div><button class="modal-close" onclick="closeModal('modal-daily-abs')">×</button></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Karyawan</label><select class="form-input" id="dh-emp-sel"></select></div>
+      <div><label class="form-label">Tanggal</label><input class="form-input" id="dh-tanggal" type="date"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Status</label>
+      <select class="form-input" id="dh-status"><option>Hadir</option><option>Telat</option><option>Alpha</option><option>Sakit</option><option>Izin</option><option>Cuti</option></select>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div><label class="form-label">Jam Masuk</label><input class="form-input" id="dh-jam-masuk" type="time"></div>
+      <div><label class="form-label">Jam Keluar</label><input class="form-input" id="dh-jam-keluar" type="time"></div>
+      <div><label class="form-label">Terlambat (menit)</label><input class="form-input" id="dh-terlambat" type="number" value="0"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Keterangan</label><input class="form-input" id="dh-keterangan"></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveDailyAbs()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-daily-abs')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Upload Dokumen (#11) -->
+<div class="modal-backdrop" id="modal-dokumen">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">+ Upload Dokumen</div><button class="modal-close" onclick="closeModal('modal-dokumen')">×</button></div>
+    <div class="form-row"><label class="form-label">Karyawan</label><select class="form-input" id="doc-emp-sel"></select></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Nama Dokumen</label><input class="form-input" id="doc-nama" placeholder="e.g. KTP Atas Nama..."></div>
+      <div><label class="form-label">Jenis</label>
+        <select class="form-input" id="doc-jenis"><option>KTP</option><option>Ijazah</option><option>BPJS Kesehatan</option><option>BPJS TK</option><option>Kontrak</option><option>Foto</option><option>Sertifikat</option><option>Lainnya</option></select>
+      </div>
+    </div>
+    <div class="form-row"><label class="form-label">Upload File</label><input class="form-input" id="doc-file" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"></div>
+    <div class="form-row"><label class="form-label">Atau URL Dokumen (Google Drive, dll)</label><input class="form-input" id="doc-url-manual" placeholder="https://drive.google.com/..."></div>
+    <div class="form-row"><label class="form-label">Keterangan</label><input class="form-input" id="doc-keterangan"></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveDocument()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-dokumen')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Offboarding (#12) -->
+<div class="modal-backdrop" id="modal-offboard">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header"><div class="modal-title">Proses Offboarding</div><button class="modal-close" onclick="closeModal('modal-offboard')">×</button></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Karyawan</label><select class="form-input" id="ob-emp-sel"></select></div>
+      <div><label class="form-label">Status</label>
+        <select class="form-input" id="ob-status"><option>Proses</option><option>Selesai</option></select>
+      </div>
+      <div><label class="form-label">Tanggal Resign</label><input class="form-input" id="ob-tgl-resign" type="date"></div>
+      <div><label class="form-label">Hari Terakhir Kerja</label><input class="form-input" id="ob-tgl-terakhir" type="date"></div>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:#8c6c64;text-transform:uppercase;letter-spacing:.05em;margin:12px 0 8px">Checklist Serah Terima</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="ob-serah_laptop"> Laptop / Perangkat</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="ob-serah_id_card"> ID Card / Badge</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="ob-serah_seragam"> Seragam / Atribut</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="ob-serah_kunci"> Kunci / Akses Fisik</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="ob-cabut_akses_sistem"> Cabut Akses Sistem</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="ob-cabut_akses_email"> Cabut Akses Email</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="ob-exit_interview"> Exit Interview</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="ob-urus_bpjs"> Urusan BPJS</label>
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="ob-urus_surat_referensi"> Surat Referensi</label>
+    </div>
+    <div class="form-row"><label class="form-label">Catatan</label><textarea class="form-input" id="ob-catatan" rows="2" style="resize:vertical"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveOffboard()">Simpan Checklist</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-offboard')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Penilaian KPI (#13) -->
+<div class="modal-backdrop" id="modal-kpi">
+  <div class="modal" style="max-width:540px">
+    <div class="modal-header"><div class="modal-title">Penilaian Kinerja</div><button class="modal-close" onclick="closeModal('modal-kpi')">×</button></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Karyawan</label><select class="form-input" id="kpi-emp-sel"></select></div>
+      <div><label class="form-label">Periode (e.g. Jan 2026)</label><input class="form-input" id="kpi-periode" placeholder="Jan 2026"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Tipe Penilaian</label>
+      <select class="form-input" id="kpi-tipe"><option>Bulanan</option><option>Kuartalan</option><option>Tahunan</option></select>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:#8c6c64;text-transform:uppercase;letter-spacing:.05em;margin:10px 0 8px">Skor per Aspek (0–100)</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><label class="form-label">Kualitas Kerja</label><input class="form-input" id="kpi-kualitas" type="number" min="0" max="100" value="80"></div>
+      <div><label class="form-label">Kuantitas / Target</label><input class="form-input" id="kpi-kuantitas" type="number" min="0" max="100" value="80"></div>
+      <div><label class="form-label">Kehadiran</label><input class="form-input" id="kpi-kehadiran" type="number" min="0" max="100" value="80"></div>
+      <div><label class="form-label">Sikap & Perilaku</label><input class="form-input" id="kpi-sikap" type="number" min="0" max="100" value="80"></div>
+      <div><label class="form-label">Inisiatif & Kreativitas</label><input class="form-input" id="kpi-inisiatif" type="number" min="0" max="100" value="80"></div>
+      <div><label class="form-label">Dinilai oleh</label><input class="form-input" id="kpi-penilai" placeholder="Nama penilai"></div>
+    </div>
+    <div class="form-row" style="margin-top:8px"><label class="form-label">Catatan</label><textarea class="form-input" id="kpi-catatan" rows="2" style="resize:vertical"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="saveKpi()">Simpan Penilaian</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-kpi')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tambah Lembur -->
+<div class="modal-backdrop" id="modal-overtime">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">+ Tambah Lembur</div><button class="modal-close" onclick="closeModal('modal-overtime')">×</button></div>
+    <div class="form-row"><label class="form-label">Karyawan</label><select class="form-input" id="ot-emp-sel"><option value="">-- Pilih Karyawan --</option></select></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Tanggal</label><input class="form-input" id="ot-tanggal" type="date"></div>
+      <div><label class="form-label">Jenis</label><select class="form-input" id="ot-jenis"><option>Biasa</option><option>Hari Libur</option><option>Hari Raya</option></select></div>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Jam Mulai</label><input class="form-input" id="ot-jam-mulai" type="time"></div>
+      <div><label class="form-label">Jam Selesai</label><input class="form-input" id="ot-jam-selesai" type="time"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Tarif per Jam (Rp)</label><input class="form-input" id="ot-tarif" type="number" value="0" placeholder="e.g. 15000"></div>
+    <div class="form-row"><label class="form-label">Keterangan</label><textarea class="form-input" id="ot-keterangan" rows="2" style="resize:vertical"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="window.saveOvertime()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-overtime')">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Training -->
+<div class="modal-backdrop" id="modal-training">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-header"><div class="modal-title">Training Karyawan</div><button class="modal-close" onclick="closeModal('modal-training')">×</button></div>
+    <div class="form-row"><label class="form-label">Karyawan</label><select class="form-input" id="tr-emp-sel"><option value="">-- Pilih Karyawan --</option></select></div>
+    <div class="form-row"><label class="form-label">Nama Training / Pelatihan</label><input class="form-input" id="tr-nama-training" placeholder="e.g. Pelatihan K3, Sertifikasi ISO..."></div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Jenis</label><select class="form-input" id="tr-jenis"><option>Internal</option><option>Eksternal</option><option>Online</option><option>Sertifikasi</option></select></div>
+      <div><label class="form-label">Penyelenggara</label><input class="form-input" id="tr-penyelenggara" placeholder="Nama lembaga / vendor"></div>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div><label class="form-label">Tanggal Mulai</label><input class="form-input" id="tr-tgl-mulai" type="date"></div>
+      <div><label class="form-label">Tanggal Selesai</label><input class="form-input" id="tr-tgl-selesai" type="date"></div>
+    </div>
+    <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div><label class="form-label">Biaya (Rp)</label><input class="form-input" id="tr-biaya" type="number" value="0"></div>
+      <div><label class="form-label">Nilai Akhir (0-100)</label><input class="form-input" id="tr-nilai" type="number" min="0" max="100" placeholder="—"></div>
+      <div><label class="form-label">Status</label><select class="form-input" id="tr-status"><option>Direncanakan</option><option>Berlangsung</option><option>Selesai</option><option>Batal</option></select></div>
+    </div>
+    <div class="form-row"><label class="form-label">URL Sertifikat / Dokumen</label><input class="form-input" id="tr-sertifikat" placeholder="https://drive.google.com/..."></div>
+    <div class="form-row"><label class="form-label">Keterangan</label><textarea class="form-input" id="tr-keterangan" rows="2" style="resize:vertical"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-secondary" style="flex:1" onclick="window.saveTraining()">Simpan</button>
+      <button class="btn btn-outline" onclick="closeModal('modal-training')">Batal</button>
+    </div>
+  </div>
+</div>
+
 <script src="./js/config.js"></script>
-<script type="module">
-import {
-  supabase, requireAuth, logout,
-  loadEmployees, loadRecruitment, loadAttendance, loadSP,
-  createEmployee, updateEmployee, deleteEmployee,
-  createRecruitment, updateRecruitment, deleteRecruitment,
-  upsertAttendance, deleteAttendance,
-  createSP, deleteSP,
-  isoToDmy, dmyToIso
-} from './js/supabase.js';
-
-const authResult = await requireAuth();
-if (!authResult) throw new Error('Not authenticated');
-const { session, hrUser } = authResult;
-const canWrite = ['admin','hr_manager','hr_staff'].includes(hrUser.role);
-
-window.logout = logout;
-window.canWrite = canWrite;
-
-let rekData = [];
-let empData = [];
-let attData = [];
-let spData  = [];
-
-// ── UTILS ──
-function getRekStage(r) {
-  if (r.join) return 'join';
-  if (r.ttd_kontrak) return 'ttd';
-  if (r.interview_hr || r.interview_user) return 'interview';
-  if (r.screening_cv) return 'screening';
-  return 'applied';
-}
-function stageLabel(s) {
-  return {applied:'Applied',screening:'Screening CV',interview:'Interview HR',ttd:'TTD Kontrak',join:'Bergabung'}[s];
-}
-function badgeEmpStatus(s) {
-  const ns = normalizeStatus(s);
-  if (ns === 'aktif') return '<span class="badge badge-aktif">Aktif</span>';
-  if (ns === 'resign') return '<span class="badge badge-resign">Resign</span>';
-  return '<span class="badge badge-gray">' + (s||'') + '</span>';
-}
-function badgeEmpType(s) {
-  if (s === 'Contract') return '<span class="badge badge-contract">Kontrak</span>';
-  if (s === 'Probation') return '<span class="badge badge-probation">Probasi</span>';
-  if (s === 'Resigned') return '<span class="badge badge-resign">Resigned</span>';
-  return '<span class="badge badge-gray">' + s + '</span>';
-}
-function badgeSP(s) {
-  if (s === 'SP 1') return '<span class="badge badge-sp1">SP 1</span>';
-  if (s === 'SP 2') return '<span class="badge badge-sp2">SP 2</span>';
-  return '<span class="badge badge-sp3">' + s + '</span>';
-}
-function initials(name) {
-  return name.split(' ').slice(0,2).map(function(w){ return w[0]; }).join('').toUpperCase();
-}
-const AVATAR_COLORS = ['#fad442','#8d1e18','#1d4e89','#2d6a4f','#8E44AD','#8c6c64','#16A085'];
-function avatarColor(id) {
-  var n = parseInt(id.replace(/\D/g,'')) || 0;
-  return AVATAR_COLORS[n % AVATAR_COLORS.length];
-}
-
-// ── NAVIGATION ──
-const titles = {
-  dashboard:'Dashboard',
-  rekrutmen:'Pipeline Kandidat',
-  karyawan:'Data Karyawan',
-  absensi:'Absensi',
-  sp:'Surat Peringatan'
-};
-function navTo(page, el) {
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
-  document.getElementById('page-' + page).classList.add('active');
+<script type="module" src="./js/app.js"></script>
+<script>
+// Tab job openings
+function switchJobTab(name, el) {
+  document.querySelectorAll('#page-job-openings .tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  closeSidebar();
-  window.scrollTo(0, 0);
-  // Re-run animations for the activated page
-  requestAnimationFrame(() => runPageAnimations(page));
+  document.getElementById('job-tab-board').classList.toggle('active', name === 'board');
+  document.getElementById('job-tab-profiles').classList.toggle('active', name === 'profiles');
 }
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('overlay').classList.toggle('show');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('overlay').classList.remove('show');
-}
-if (window.innerWidth <= 768) {
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', closeSidebar);
-  });
-}
-
-// ── COUNT-UP ANIMATION ──
-function animateCount(el, target, duration = 800) {
-  if (!el) return;
-  const start = performance.now();
-  function step(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = 1 - Math.pow(1 - progress, 3);
-    el.textContent = Math.round(target * eased);
-    if (progress < 1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-}
-
-// ── INTERSECTION OBSERVER: scroll-reveal (initial load only) ──
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target);
+// Modal tab helper (inline bridge until module loads)
+function switchEmpModalTab(name, btn) {
+  ['data','kontak','gaji'].forEach(t => {
+    const panel = document.getElementById('ee-panel-' + t);
+    const tabBtn = document.getElementById('ee-tab-' + t);
+    if (panel) panel.style.display = t === name ? '' : 'none';
+    if (tabBtn) {
+      tabBtn.style.background = t === name ? '#8d1e18' : 'transparent';
+      tabBtn.style.color      = t === name ? 'white' : 'rgba(141,30,24,0.7)';
     }
   });
-}, { threshold: 0.12 });
-
-function observeReveal() {
-  document.querySelectorAll('.reveal').forEach(el => {
-    el.classList.remove('visible');
-    revealObserver.observe(el);
-  });
-}
-
-// ── RESET + REPLAY: re-run all animations for a page ──
-function runPageAnimations(page) {
-  const pageEl = document.getElementById('page-' + page);
-  if (!pageEl) return;
-
-  // 1. Reveal cards (reset → re-observe)
-  pageEl.querySelectorAll('.reveal').forEach(el => {
-    el.classList.remove('visible');
-    // Short timeout so CSS transition resets before re-adding
-    setTimeout(() => el.classList.add('visible'), 30);
-  });
-
-  // 2. KPI stat card slide-up reset
-  pageEl.querySelectorAll('.stat-card-new').forEach((card, i) => {
-    card.style.animation = 'none';
-    card.offsetHeight; // reflow
-    card.style.animation = '';
-    card.style.animationDelay = (0.05 + i * 0.07) + 's';
-  });
-
-  // 3. Bar chart bars — grow from bottom
-  animateBarsIn(pageEl);
-
-  // 4. Table rows — staggered fade in
-  pageEl.querySelectorAll('table tbody').forEach(tbody => {
-    animateRowsIn(tbody);
-  });
-
-  // 5. Progress bars — slide from left
-  pageEl.querySelectorAll('.progress-fill').forEach((fill, i) => {
-    const target = fill.style.width;
-    fill.style.transition = 'none';
-    fill.style.width = '0';
-    fill.offsetHeight;
-    setTimeout(() => {
-      fill.style.transition = 'width .75s cubic-bezier(.22,.68,0,1.2)';
-      fill.style.width = target;
-    }, 80 + i * 35);
-  });
-
-  // 6. Donut SVG circles
-  if (page === 'dashboard') animateDonutIn();
-
-  // 7. Count-up for KPI numbers
-  pageEl.querySelectorAll('.stat-num-new').forEach(el => {
-    const val = parseInt(el.textContent) || 0;
-    if (val > 0) animateCount(el, val, 800);
-  });
-}
-
-function animateBarsIn(ctx) {
-  const bars = (ctx || document).querySelectorAll('.bar-chart .bar');
-  bars.forEach((bar, i) => {
-    const targetH = bar.getAttribute('data-height') || bar.style.height;
-    // Reset
-    bar.style.transition = 'none';
-    bar.style.height = '0px';
-    bar.style.opacity = '0';
-    bar.offsetHeight; // force reflow
-    // Animate with stagger
-    setTimeout(() => {
-      bar.style.transition =
-        'height .65s cubic-bezier(.22,.68,0,1.2) 0s, opacity .3s ease 0s';
-      bar.style.height = targetH + 'px';
-      bar.style.opacity = '1';
-    }, 40 + i * 80);
-  });
-  // Also animate bar-val numbers
-  (ctx || document).querySelectorAll('.bar-chart .bar-val').forEach((el, i) => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(6px)';
-    el.style.transition = 'none';
-    el.offsetHeight;
-    setTimeout(() => {
-      el.style.transition = 'opacity .4s ease, transform .4s ease';
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
-    }, 80 + i * 80);
-  });
-}
-
-function animateRowsIn(tbody) {
-  if (!tbody) return;
-  Array.from(tbody.querySelectorAll('tr')).forEach((row, i) => {
-    row.style.opacity = '0';
-    row.style.transform = 'translateX(-12px)';
-    row.style.transition = 'none';
-    row.offsetHeight;
-    setTimeout(() => {
-      row.style.transition = 'opacity .35s ease, transform .35s ease';
-      row.style.opacity = '1';
-      row.style.transform = 'translateX(0)';
-    }, 50 + i * 40);
-  });
-}
-
-function animateDonutIn() {
-  const svg = document.getElementById('donut-svg');
-  if (!svg) return;
-  const circles = svg.querySelectorAll('circle[stroke-dasharray]');
-  circles.forEach((c, i) => {
-    const arr = c.getAttribute('stroke-dasharray');
-    const total = arr ? parseFloat(arr.split(' ')[0]) : 0;
-    c.style.transition = 'none';
-    c.style.strokeDashoffset = total;
-    c.style.opacity = '0';
-    c.offsetHeight;
-    setTimeout(() => {
-      c.style.transition = `stroke-dashoffset .8s cubic-bezier(.22,.68,0,1.2) ${i * 0.15}s, opacity .4s ease ${i * 0.15}s`;
-      c.style.strokeDashoffset = '0';
-      c.style.opacity = '1';
-    }, 80);
-  });
-}
-
-// Legacy stubs (keep for backward compat with existing calls)
-function observeRevealOnce() { observeReveal(); }
-function animateBars() { animateBarsIn(null); }
-function animateProgressBars(tableId) {
-  const table = document.getElementById(tableId);
-  if (!table) return;
-  table.querySelectorAll('.progress-fill').forEach((fill, i) => {
-    const target = fill.style.width;
-    fill.style.transition = 'none';
-    fill.style.width = '0';
-    fill.offsetHeight;
-    setTimeout(() => {
-      fill.style.transition = 'width .75s cubic-bezier(.22,.68,0,1.2)';
-      fill.style.width = target;
-    }, 80 + i * 35);
-  });
-}
-function animateTableRows(tableId) {
-  const table = document.getElementById(tableId);
-  if (!table) return;
-  animateRowsIn(table.querySelector('tbody'));
-}
-function animateDonut() { animateDonutIn(); }
-
-// ── DASHBOARD ──
-function normalizeStatus(s) {
-  return (s || '').toString().trim().toLowerCase();
-}
-
-function buildDashboard() {
-  const aktif   = empData.filter(e => normalizeStatus(e.status) === 'aktif').length;
-  const resign  = empData.filter(e => normalizeStatus(e.status) === 'resign').length;
-  const kandidat = rekData.length;
-  const joined  = rekData.filter(r => r.join).length;
-  const spCount = spData.length;
-
-  animateCount(document.getElementById('st-aktif'), aktif, 900);
-  document.getElementById('st-aktif-sub').textContent = empData.length + ' total terdaftar';
-  animateCount(document.getElementById('st-resign'), resign, 900);
-  animateCount(document.getElementById('st-kandidat'), kandidat, 900);
-  document.getElementById('st-kandidat-sub').textContent = joined + ' sudah bergabung';
-  animateCount(document.getElementById('st-join'), joined, 900);
-  animateCount(document.getElementById('st-sp'), spCount, 900);
-
-  // Donut
-  const byStatus = {};
-  empData.forEach(e => {
-    const key = (e.status || '').trim();
-    byStatus[key] = (byStatus[key] || 0) + 1;
-  });
-  const colors = { 'Aktif':'#fad442', 'aktif':'#fad442', 'Resign':'#8d1e18', 'resign':'#8d1e18', 'Probation':'#a93226', 'probation':'#a93226' };
-  const total = empData.length;
-  let offset = 0;
-  const R = 38, C = 2 * Math.PI * R;
-  let circles = '';
-  const legend = document.getElementById('donut-legend');
-  legend.innerHTML = '';
-  Object.entries(byStatus).forEach(([k, v]) => {
-    const pct = v / total;
-    const dash = pct * C;
-    const color = colors[k] || '#1d4e89';
-    circles += '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="' + color + '" stroke-width="14" stroke-dasharray="' + dash + ' ' + (C - dash) + '" stroke-dashoffset="' + (-offset * C) + '" transform="rotate(-90 50 50)" style="transition:all .5s"/>';
-    offset += pct;
-    legend.innerHTML += '<div class="legend-item"><div class="legend-dot" style="background:' + color + '"></div><span>' + k + '</span><span class="legend-val">' + v + '</span></div>';
-  });
-  document.getElementById('donut-svg').innerHTML = '<circle cx="50" cy="50" r="' + R + '" fill="none" stroke="rgba(141,30,24,0.10)" stroke-width="14"/>' + circles;
-
-  // Bar chart by posisi
-  const byPos = {};
-  rekData.forEach(r => { byPos[r.posisi] = (byPos[r.posisi]||0)+1; });
-  const maxV = Math.max(...Object.values(byPos));
-  const barColors = ['#8d1e18','#fad442','#a93226','#c0392b','#FAD44299'];
-  const chart = document.getElementById('posisi-chart');
-  const legendEl = document.getElementById('posisi-legend');
-  chart.innerHTML = ''; legendEl.innerHTML = '';
-  Object.entries(byPos).forEach(([k, v], i) => {
-    const h = Math.max(8, (v / maxV) * 90);
-    const c = barColors[i % barColors.length];
-    chart.innerHTML +=
-      '<div class="bar-item">' +
-        '<div class="bar-val" style="color:' + c + '">' + v + '</div>' +
-        '<div class="bar-track">' +
-          '<div class="bar" data-height="' + h + '" style="background:' + c + ';border-radius:6px 6px 0 0"></div>' +
-        '</div>' +
-        '<div class="bar-lbl">' + k + '</div>' +
-      '</div>';
-    legendEl.innerHTML += '<div style="display:flex;align-items:center;gap:5px;font-size:11px"><div style="width:8px;height:8px;border-radius:50%;background:' + c + '"></div>' + k + '</div>';
-  });
-
-  // Recent recruitment
-  const rec = [...rekData].sort((a, b) => new Date(b.update_date.split('/').reverse().join('-')) - new Date(a.update_date.split('/').reverse().join('-'))).slice(0, 5);
-  const stageColors = {applied:'rgba(141,30,24,.08)', screening:'#FFFDF0', interview:'#e8f5e9', ttd:'#e8f0fe', join:'rgba(141,30,24,.10)'};
-  document.getElementById('rek-recent').innerHTML = rec.map(r => {
-    const stage = getRekStage(r);
-    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(141,30,24,0.08)">' +
-      '<div style="width:34px;height:34px;border-radius:10px;background:' + (stageColors[stage]||'rgba(141,30,24,.08)') + ';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;border:2px solid rgba(141,30,24,.15);color:var(--red)">' + initials(r.nama) + '</div>' +
-      '<div style="flex:1;min-width:0">' +
-        '<div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + r.nama + '</div>' +
-        '<div style="font-size:11px;color:#8c6c64">' + r.posisi + '</div>' +
-      '</div>' +
-      '<span class="badge badge-yellow" style="font-size:10px">' + stageLabel(stage) + '</span>' +
-    '</div>';
-  }).join('');
-
-  // Kontrak expiry
-  const today = new Date('2025-10-31');
-  const expiring = empData.filter(e => {
-    if (normalizeStatus(e.status) !== 'aktif') return false;
-    const d = new Date(e.end_date);
-    const diff = (d - today) / (1000 * 60 * 60 * 24);
-    return diff >= 0 && diff <= 60;
-  }).sort((a, b) => new Date(a.end_date) - new Date(b.end_date));
-  document.getElementById('kontrak-expiry').innerHTML = expiring.length ? expiring.map(e => {
-    const d = new Date(e.end_date);
-    const diff = Math.round((d - today) / (1000 * 60 * 60 * 24));
-    const danger = diff <= 14;
-    return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(141,30,24,0.08)">' +
-      '<div style="width:10px;height:10px;border-radius:50%;background:' + (danger ? '#8d1e18' : '#fad442') + ';flex-shrink:0"></div>' +
-      '<div style="flex:1"><div style="font-size:13px;font-weight:700">' + e.name + '</div>' +
-      '<div style="font-size:11px;color:#8c6c64">' + e.position + '</div></div>' +
-      '<span class="badge ' + (danger ? 'badge-resign' : 'badge-yellow') + '" style="font-size:10px">' + diff + 'h lagi</span>' +
-    '</div>';
-  }).join('') : '<div style="color:var(--text-muted);font-size:13px;padding:8px 0">Tidak ada kontrak yang akan berakhir dalam 60 hari.</div>';
-
-  // Attendance dash table
-  document.getElementById('att-dash-table').innerHTML =
-    '<thead><tr><th>Nama</th><th>Hadir</th><th>Terlambat</th><th>Sakit</th><th>Alpha</th><th>Kehadiran %</th></tr></thead>' +
-    '<tbody>' + attData.map(a => {
-      const pct = Math.round((a.total_hadir / 31) * 100);
-      const clr = pct < 85 ? '#8d1e18' : pct < 95 ? '#8c6c64' : '#2d6a4f';
-      return '<tr><td><b>' + a.full_name + '</b></td>' +
-        '<td>' + a.total_hadir + '</td>' +
-        '<td>' + (a.terlambat > 0 ? '<span class="badge badge-sp1">' + a.terlambat + 'x</span>' : '—') + '</td>' +
-        '<td>' + (a.sakit > 0 ? '<span class="badge badge-probation">' + a.sakit + 'h</span>' : '—') + '</td>' +
-        '<td>' + (a.alpha > 0 ? '<span class="badge badge-resign">' + a.alpha + 'h</span>' : '—') + '</td>' +
-        '<td><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:700;color:' + clr + '">' + pct + '%</span>' +
-        '<div class="progress-bar" style="flex:1;max-width:80px"><div class="progress-fill" style="width:' + pct + '%;background:' + (pct < 85 ? '#8d1e18' : pct < 95 ? '#8c6c64' : '#fad442') + '"></div></div></div></td>' +
-      '</tr>';
-    }).join('') + '</tbody>';
-
-  // Kick off animations after DOM is painted
-  requestAnimationFrame(() => {
-    observeReveal();
-    runPageAnimations('dashboard');
-  });
-}
-
-// ── REKRUTMEN ──
-let rekFilter = '', rekFilterPos = '';
-const STAGES = ['applied','screening','interview','ttd','join'];
-const STAGE_LABELS = {applied:'Applied',screening:'Screening CV',interview:'Interview HR',ttd:'TTD Kontrak',join:'Bergabung'};
-const COL_CLASSES = {applied:'col-applied',screening:'col-screening',interview:'col-interview',ttd:'col-ttd',join:'col-join'};
-
-function buildPipeline() {
-  const board = document.getElementById('pipeline-board');
-  const grouped = {};
-  STAGES.forEach(s => grouped[s] = []);
-  rekData.forEach(r => grouped[getRekStage(r)].push(r));
-  board.innerHTML = STAGES.map(s =>
-    '<div class="pipeline-col ' + COL_CLASSES[s] + '">' +
-      '<div class="pipeline-col-title">' + STAGE_LABELS[s] + ' <span class="pipeline-col-count">' + grouped[s].length + '</span></div>' +
-      grouped[s].map(r =>
-        '<div class="pipeline-card">' +
-          '<div class="pipeline-card-name">' + r.nama + '</div>' +
-          '<div class="pipeline-card-pos">' + r.posisi + '</div>' +
-          '<div class="pipeline-card-date"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ' + r.applied + '</div>' +
-          (r.lokasi.includes('Dalam') ?
-            '<div class="pipeline-card-date" style="margin-top:3px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Kab. Maros</div>' :
-            '<div class="pipeline-card-date" style="margin-top:3px;color:#C0392B"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Luar Maros</div>'
-          ) +
-        '</div>'
-      ).join('') +
-    '</div>'
-  ).join('');
-}
-
-function buildRekTable(data) {
-  const stageColors = {applied:'#8c6c64',screening:'#c9aa1e',interview:'#2d6a4f',ttd:'#1d4e89',join:'#8d1e18'};
-  document.getElementById('rek-tbody').innerHTML = data.map((r, i) => {
-    const stage = getRekStage(r);
-    return '<tr>' +
-      '<td>' + (i+1) + '</td>' +
-      '<td><b>' + r.nama + '</b><div style="font-size:11px;color:#8c6c64">' + r.interval_usia + ' · ' + r.status + '</div></td>' +
-      '<td>' + r.posisi + '</td>' +
-      '<td>' + r.applied + '</td>' +
-      '<td style="font-size:12px">' + (r.lokasi.includes('Dalam') ? 'Maros' : 'Luar Maros') + '</td>' +
-      '<td><span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:' + stageColors[stage] + '">● ' + STAGE_LABELS[stage] + '</span></td>' +
-      '<td>' + (r.screening_cv||'—') + '</td>' +
-      '<td>' + (r.interview_hr||'—') + '</td>' +
-      '<td>' + (r.ttd_kontrak||'—') + '</td>' +
-      '<td>' + (r.join ? '<span class="badge badge-aktif">' + r.join + '</span>' : '—') + '</td>' +
-    '</tr>';
-  }).join('');
-  requestAnimationFrame(() => animateRowsIn(document.querySelector('#rek-table-el tbody')));
-}
-
-function filterRek(v) { rekFilter = v.toLowerCase(); applyRekFilter(); }
-function filterRekPos(v) { rekFilterPos = v; applyRekFilter(); }
-function applyRekFilter() {
-  const f = rekData.filter(r =>
-    (!rekFilter || r.nama.toLowerCase().includes(rekFilter)) &&
-    (!rekFilterPos || r.posisi === rekFilterPos)
-  );
-  buildRekTable(f);
-}
-function switchRekTab(name, el) {
-  document.querySelectorAll('#page-rekrutmen .tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('rek-pipeline').classList.toggle('active', name === 'pipeline');
-  document.getElementById('rek-table').classList.toggle('active', name === 'table');
-  if (name === 'table') requestAnimationFrame(() => animateRowsIn(document.querySelector('#rek-tbody')));
-}
-function initRekrutmen() {
-  const positions = [...new Set(rekData.map(r => r.posisi))];
-  const sel = document.querySelector('#page-rekrutmen .select-filter');
-  if (sel) {
-    positions.forEach(p => {
-      const opt = document.createElement('option');
-      opt.value = p; opt.textContent = p;
-      sel.appendChild(opt);
-    });
-  }
-  buildPipeline();
-  buildRekTable(rekData);
-  document.getElementById('badge-rekrutmen').textContent = rekData.length;
-}
-
-// ── KARYAWAN ──
-let empFilterText = '', empFilterStatus = '', empFilterOrg = '';
-
-function buildEmpCards(data) {
-  document.getElementById('emp-card-grid').innerHTML = data.map(e => {
-    const ac = avatarColor(e.employee_id);
-    const isResign = normalizeStatus(e.status) === 'resign';
-    return '<div class="emp-card" style="' + (isResign ? 'opacity:.65;' : '') + '">' +
-      '<div class="emp-avatar" style="background:' + ac + '20;border-color:' + ac + '">' +
-        '<span style="color:' + ac + '">' + initials(e.name) + '</span>' +
-      '</div>' +
-      '<div class="emp-name">' + e.name + '</div>' +
-      '<div class="emp-pos">' + e.position + '</div>' +
-      '<div class="emp-meta">' +
-        badgeEmpStatus(e.status) + ' ' + badgeEmpType(e.employment_status) +
-      '</div>' +
-      '<div style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;color:#8c6c64"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="1"/><line x1="9" y1="22" x2="9" y2="12"/><line x1="15" y1="22" x2="15" y2="12"/><rect x="9" y="12" width="6" height="10"/><rect x="8" y="6" width="3" height="3"/><rect x="13" y="6" width="3" height="3"/></svg> ' + e.branch + ' &nbsp;·&nbsp; <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ' + e.join_date + '</div>' +
-      (e.end_date ? '<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#8c6c64;margin-top:2px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> s/d ' + e.end_date + '</div>' : '') +
-    '</div>';
-  }).join('');
-}
-
-function buildEmpTable(data) {
-  document.getElementById('emp-tbody').innerHTML = data.map((e, i) =>
-    '<tr>' +
-    '<td><span style="font-size:11px;font-weight:700;color:#8c6c64">' + e.employee_id + '</span></td>' +
-    '<td><div style="display:flex;align-items:center;gap:8px">' +
-      '<div style="width:28px;height:28px;border-radius:8px;background:' + avatarColor(e.employee_id) + '30;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;border:1.5px solid ' + avatarColor(e.employee_id) + '">' +
-        '<span style="color:' + avatarColor(e.employee_id) + '">' + initials(e.name) + '</span>' +
-      '</div><b>' + e.name + '</b></div></td>' +
-    '<td>' + e.organization_name + '</td>' +
-    '<td style="font-size:12px">' + e.position + '</td>' +
-    '<td>' + e.branch + '</td>' +
-    '<td>' + badgeEmpStatus(e.status) + '</td>' +
-    '<td>' + badgeEmpType(e.employment_status) + '</td>' +
-    '<td>' + e.join_date + '</td>' +
-    '<td>' + (e.end_date||'—') + '</td>' +
-    '</tr>'
-  ).join('');
-  requestAnimationFrame(() => animateRowsIn(document.querySelector('#emp-tbody')));
-}
-
-function filterEmp(v) { empFilterText = v.toLowerCase(); applyEmpFilter(); }
-function filterEmpStatus(v) { empFilterStatus = v; applyEmpFilter(); }
-function filterEmpOrg(v) { empFilterOrg = v; applyEmpFilter(); }
-function applyEmpFilter() {
-  const f = empData.filter(e =>
-    (!empFilterText || (e.name || '').toLowerCase().includes(empFilterText)) &&
-    (!empFilterStatus || normalizeStatus(e.status) === normalizeStatus(empFilterStatus)) &&
-    (!empFilterOrg || e.organization_name === empFilterOrg)
-  );
-  buildEmpCards(f);
-  buildEmpTable(f);
-}
-function initKaryawan() {
-  const orgs = [...new Set(empData.map(e => e.organization_name))];
-  const sel = document.getElementById('filter-org');
-  orgs.forEach(o => {
-    const opt = document.createElement('option');
-    opt.value = o; opt.textContent = o;
-    sel.appendChild(opt);
-  });
-  buildEmpCards(empData);
-  buildEmpTable(empData);
-}
-function switchEmpTab(name, el) {
-  document.querySelectorAll('#page-karyawan .tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('emp-cards').classList.toggle('active', name === 'cards');
-  document.getElementById('emp-table').classList.toggle('active', name === 'table');
-  if (name === 'table') requestAnimationFrame(() => animateRowsIn(document.querySelector('#emp-tbody')));
-}
-
-// ── ABSENSI ──
-function initAbsensi() {
-  const totalHadir     = attData.reduce((s, a) => s + a.total_hadir, 0);
-  const totalTerlambat = attData.reduce((s, a) => s + a.terlambat, 0);
-  const totalSakit     = attData.reduce((s, a) => s + a.sakit, 0);
-  const totalAlpha     = attData.reduce((s, a) => s + a.alpha, 0);
-
-  const SVG_USERS  = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>';
-  const SVG_CHECK  = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-  const SVG_CLOCK  = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
-  const SVG_CROSS  = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-
-  const cards = [
-    { cls:'kpi-1', icon:SVG_USERS, label:'Karyawan Tercatat', val:attData.length,    id:'att-st-1' },
-    { cls:'kpi-3', icon:SVG_CHECK, label:'Total Hadir (hari)', val:totalHadir,        id:'att-st-2' },
-    { cls:'kpi-2', icon:SVG_CLOCK, label:'Total Terlambat',    val:totalTerlambat,    id:'att-st-3' },
-    { cls:'kpi-5', icon:SVG_CROSS, label:'Total Sakit (hari)', val:totalSakit,        id:'att-st-4' },
-  ];
-
-  document.getElementById('att-stats').innerHTML = cards.map((c, i) =>
-    '<div class="stat-card-new ' + c.cls + ' anim-slide-up delay-' + (i+1) + '">' +
-      '<div class="stat-accent"></div>' +
-      '<div class="stat-card-icon">' + c.icon + '</div>' +
-      '<div class="stat-label-new">' + c.label + '</div>' +
-      '<div class="stat-num-new" id="' + c.id + '">0</div>' +
-    '</div>'
-  ).join('');
-
-  // count-up after render
-  requestAnimationFrame(() => {
-    cards.forEach(c => animateCount(document.getElementById(c.id), c.val, 900));
-  });
-
-  const issues = attData.filter(a => a.terlambat > 0 || a.alpha > 0 || a.sakit >= 3);
-  const warnEl = document.getElementById('att-warning');
-  if (issues.length) {
-    warnEl.className = 'info-box warning';
-    warnEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <div><strong>Perhatian:</strong> ' + issues.length + ' karyawan memiliki catatan kehadiran yang perlu diperhatikan: ' + issues.map(a => a.full_name).join(', ') + '.</div>';
-  } else {
-    warnEl.style.display = 'none';
-  }
-
-  document.getElementById('att-tbody').innerHTML = attData.map((a, i) => {
-    const pct = Math.round((a.total_hadir / 31) * 100);
-    const clr = pct < 85 ? '#8d1e18' : pct < 95 ? '#8c6c64' : '#2d6a4f';
-    const bgClr = pct < 85 ? '#8d1e18' : pct < 95 ? '#8c6c64' : '#fad442';
-    return '<tr>' +
-      '<td>' + (i+1) + '</td>' +
-      '<td style="font-size:11px;color:#8c6c64;font-weight:700">' + a.employee_id + '</td>' +
-      '<td><b>' + a.full_name + '</b></td>' +
-      '<td>' + a.branch + '</td>' +
-      '<td style="font-weight:700">' + a.total_hadir + '</td>' +
-      '<td>' + (a.terlambat > 0 ? '<span class="badge badge-sp1">' + a.terlambat + 'x</span>' : '—') + '</td>' +
-      '<td>' + (a.cuti > 0 ? '<span class="badge badge-yellow">' + a.cuti + 'h</span>' : '—') + '</td>' +
-      '<td>' + (a.sakit > 0 ? '<span class="badge badge-probation">' + a.sakit + 'h</span>' : '—') + '</td>' +
-      '<td>' + (a.izin > 0 ? '<span class="badge badge-gray">' + a.izin + 'h</span>' : '—') + '</td>' +
-      '<td>' + (a.alpha > 0 ? '<span class="badge badge-resign">' + a.alpha + 'h</span>' : '—') + '</td>' +
-      '<td><div style="display:flex;align-items:center;gap:8px">' +
-        '<span style="font-weight:700;color:' + clr + '">' + pct + '%</span>' +
-        '<div class="progress-bar" style="width:70px"><div class="progress-fill" style="width:' + pct + '%;background:' + bgClr + '"></div></div>' +
-      '</div></td>' +
-    '</tr>';
-  }).join('');
-
-  requestAnimationFrame(() => {
-    animateRowsIn(document.querySelector('#att-table-el tbody'));
-    animateProgressBars('att-table-el');
-  });
-}
-
-// ── SP ──
-function buildSpList(data) {
-  document.getElementById('sp-list').innerHTML = data.map(s =>
-    '<div class="sp-card">' +
-      '<div class="sp-icon ' + (s.jenis_sp.includes('1') ? 'sp1' : 'sp2') + '">' +
-        (s.jenis_sp.includes('1') ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>') +
-      '</div>' +
-      '<div style="flex:1">' +
-        '<div style="font-weight:700;font-size:14px">' + s.name + '</div>' +
-        '<div style="font-size:12px;color:var(--text-hint)">' + s.position + ' · ' + s.level + '</div>' +
-        '<div style="font-size:11px;color:var(--text-muted);margin-top:2px">' + s.employee_id + ' · ' + s.bulan + '</div>' +
-      '</div>' +
-      badgeSP(s.jenis_sp) +
-    '</div>'
-  ).join('');
-
-  document.getElementById('sp-tbody').innerHTML = data.map((s, i) =>
-    '<tr>' +
-    '<td>' + (i+1) + '</td>' +
-    '<td style="font-size:11px;color:#8c6c64;font-weight:700">' + s.employee_id + '</td>' +
-    '<td><b>' + s.name + '</b></td>' +
-    '<td style="font-size:12px">' + s.position + '</td>' +
-    '<td>' + s.level + '</td>' +
-    '<td>' + badgeSP(s.jenis_sp) + '</td>' +
-    '<td><span class="badge badge-gray">' + s.bulan + '</span></td>' +
-    '</tr>'
-  ).join('');
-}
-
-function switchSpTab(name, el) {
-  document.querySelectorAll('#page-sp .tab').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  const filtered = name === 'all' ? spData : spData.filter(s => s.bulan.toLowerCase().includes(name));
-  buildSpList(filtered);
-}
-
-function initSP() {
-  const sp1   = spData.filter(s => s.jenis_sp === 'SP 1').length;
-  const sp2   = spData.filter(s => s.jenis_sp === 'SP 2').length;
-  const byOkt = spData.filter(s => s.bulan.includes('Okt')).length;
-  const byNov = spData.filter(s => s.bulan.includes('Nov')).length;
-
-  const SVG_TOTAL  = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
-  const SVG_WARN1  = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-  const SVG_WARN2  = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
-  const SVG_CAL    = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
-
-  const cards = [
-    { cls:'kpi-1', icon:SVG_TOTAL, label:'Total SP',    val:spData.length, id:'sp-st-1' },
-    { cls:'kpi-3', icon:SVG_WARN1, label:'SP 1',        val:sp1,           id:'sp-st-2' },
-    { cls:'kpi-2', icon:SVG_WARN2, label:'SP 2',        val:sp2,           id:'sp-st-3' },
-    { cls:'kpi-4', icon:SVG_CAL,   label:'SP Oktober',  val:byOkt,         id:'sp-st-4' },
-  ];
-
-  document.getElementById('sp-stats').innerHTML = cards.map((c, i) =>
-    '<div class="stat-card-new ' + c.cls + ' anim-slide-up delay-' + (i+1) + '">' +
-      '<div class="stat-accent"></div>' +
-      '<div class="stat-card-icon">' + c.icon + '</div>' +
-      '<div class="stat-label-new">' + c.label + '</div>' +
-      '<div class="stat-num-new" id="' + c.id + '">0</div>' +
-    '</div>'
-  ).join('');
-
-  requestAnimationFrame(() => {
-    cards.forEach(c => animateCount(document.getElementById(c.id), c.val, 900));
-  });
-
-  document.getElementById('badge-sp').textContent = spData.length;
-  buildSpList(spData);
-}
-
-// ── MODAL ──
-function openAddRekModal() {
-  document.getElementById('modal-rek').classList.add('open');
-}
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-
-// ── LOAD DATA ──
-async function loadWithRetry(fn, label, retries = 2) {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      const result = await fn();
-      if (!Array.isArray(result)) throw new Error('Data ' + label + ' tidak valid');
-      return result;
-    } catch (err) {
-      if (i === retries) throw err;
-      await new Promise(r => setTimeout(r, 400 * (i + 1)));
-    }
-  }
-}
-
-async function loadAllData() {
-  try {
-    // Load sequentially to avoid race conditions and reduce DB pressure
-    rekData = await loadWithRetry(loadRecruitment, 'rekrutmen');
-    empData = await loadWithRetry(loadEmployees,   'karyawan');
-    attData = await loadWithRetry(loadAttendance,  'absensi');
-    spData  = await loadWithRetry(loadSP,          'SP');
-  } catch (err) {
-    console.error('Gagal memuat data:', err);
-    alert('⚠️ Gagal memuat data dari database.\n\n' + err.message + '\n\nCek koneksi dan konfigurasi js/config.js');
-    throw err;
-  }
-}
-
-// ── LOADING BAR HELPERS ──
-let _loadProgress = 0;
-let _loadInterval = null;
-
-function showLoading() {
-  const wrap = document.getElementById('loading-bar-wrap');
-  const bar  = document.getElementById('loading-bar');
-  const overlay = document.getElementById('loading-overlay');
-  if (wrap) wrap.classList.add('active');
-  if (overlay) { overlay.classList.remove('hidden'); }
-  _loadProgress = 0;
-  if (bar) bar.style.width = '0%';
-  // Fake progress: ramp to 85% then pause waiting for real completion
-  _loadInterval = setInterval(() => {
-    if (_loadProgress < 85) {
-      _loadProgress += (85 - _loadProgress) * 0.06;
-      if (bar) bar.style.width = _loadProgress + '%';
-    }
-  }, 80);
-}
-
-function finishLoading() {
-  clearInterval(_loadInterval);
-  const wrap = document.getElementById('loading-bar-wrap');
-  const bar  = document.getElementById('loading-bar');
-  const overlay = document.getElementById('loading-overlay');
-  if (bar) bar.style.width = '100%';
-  setTimeout(() => {
-    if (wrap) wrap.classList.remove('active');
-    if (bar) bar.style.width = '0%';
-    if (overlay) {
-      overlay.classList.add('hidden');
-      setTimeout(() => { overlay.style.display = 'none'; }, 400);
-    }
-  }, 380);
-}
-
-async function init() {
-  showLoading();
-  await loadAllData();
-  finishLoading();
-
-  const userBadge = document.getElementById('user-badge');
-  if (userBadge) userBadge.textContent = hrUser.full_name || hrUser.email;
-
-  const avatarEl = document.getElementById('header-avatar');
-  if (avatarEl && hrUser) {
-    const initName = (hrUser.full_name || hrUser.email || 'HR').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-    avatarEl.textContent = initName;
-    avatarEl.title = hrUser.full_name || hrUser.email;
-    const nameEl = document.querySelector('.header-user-name');
-    const planEl = document.querySelector('.header-user-plan');
-    if (nameEl) nameEl.textContent = hrUser.full_name || hrUser.email;
-    if (planEl) planEl.textContent = hrUser.role;
-  }
-
-  if (!canWrite) {
-    document.querySelectorAll('[data-requires-write]').forEach(el => el.style.display = 'none');
-  }
-
-  buildDashboard();
-  initRekrutmen();
-  initKaryawan();
-  initAbsensi();
-  initSP();
-}
-
-init();
-
-// ── EXPOSE TO WINDOW ──
-window.navTo            = navTo;
-window.toggleSidebar    = toggleSidebar;
-window.closeSidebar     = closeSidebar;
-window.switchRekTab     = switchRekTab;
-window.switchEmpTab     = switchEmpTab;
-window.switchSpTab      = switchSpTab;
-window.openAddRekModal  = openAddRekModal;
-window.closeModal       = closeModal;
-window.filterRek        = filterRek;
-window.filterRekPos     = filterRekPos;
-window.filterEmp        = filterEmp;
-window.filterEmpStatus  = filterEmpStatus;
-window.filterEmpOrg     = filterEmpOrg;
-window.saveKandidat     = saveKandidatSupabase;
-window.logout           = logout;
-
-// ── SAVE KANDIDAT (Supabase) ──
-async function saveKandidatSupabase() {
-  if (!canWrite) { alert('Anda tidak memiliki izin untuk menambah data.'); return; }
-  const nama    = document.getElementById('f-nama').value.trim();
-  const posisi  = document.getElementById('f-posisi').value.trim();
-  const alamat  = document.getElementById('f-alamat').value.trim();
-  const umur    = parseInt(document.getElementById('f-umur').value) || 0;
-  const status  = document.getElementById('f-status').value;
-  const berkas  = document.getElementById('f-berkas').value;
-  const applied = document.getElementById('f-applied').value;
-  if (!nama || !posisi) { alert('Nama dan posisi wajib diisi!'); return; }
-  const today = new Date().toISOString().slice(0,10);
-  try {
-    await createRecruitment({
-      nama, posisi, alamat_domisili: alamat,
-      lokasi: 'Dalam Kabupaten Maros',
-      pengumpulan_berkas: berkas,
-      umur, status,
-      no_percobaan: 1,
-      applied: applied || today,
-      create_date: today,
-      update_date: today
-    });
-    rekData = await loadRecruitment();
-    buildPipeline();
-    buildRekTable(rekData);
-    document.getElementById('badge-rekrutmen').textContent = rekData.length;
-    closeModal('modal-rek');
-    ['f-nama','f-posisi','f-alamat','f-umur','f-applied'].forEach(id => document.getElementById(id).value = '');
-    alert('✅ Kandidat "' + nama + '" berhasil ditambahkan!');
-  } catch (err) {
-    alert('❌ Gagal menyimpan: ' + err.message);
-  }
 }
 </script>
 </body>
